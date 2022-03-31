@@ -17,6 +17,10 @@ export class AuthService {
         return this.http.post<any>(this.baseUrl + 'auth', loginRequest);
     }
 
+    register(registerRequest: Object): Observable<any>{
+        return this.http.post<any>(this.baseUrl + 'users', registerRequest);
+    }
+
     setToken(data: string): void {
         localStorage.setItem('jwtToken', data);
     }

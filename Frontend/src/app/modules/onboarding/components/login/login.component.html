@@ -14,7 +14,7 @@
                 <span class="error-message" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.['required']">Password cannot be empty.</span>
             </div>
             <app-primary-button [text]="'Login'" class="w-100" [disabled]="!loginForm.valid" (click)="onSubmit()"></app-primary-button>
-            <span class="grey-text">Don't have an account?<a routerLink="/register"> Register today.</a></span>
+            <span class="grey-text">Don't have an account?<a routerLink="/onboarding/register"> Register today.</a></span>
         </form>
     </div>
 </div>

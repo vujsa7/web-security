@@ -6,13 +6,15 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AllsafeLogoComponent } from './components/allsafe-logo/allsafe-logo.component';
+import { OnboardingComponent } from './onboarding.component';
 
 
 @NgModule({
   declarations: [
     LoginComponent,
     RegisterComponent,
-    AllsafeLogoComponent
+    AllsafeLogoComponent,
+    OnboardingComponent
   ],
   imports: [
     CommonModule,
