@@ -1,0 +1,25 @@
+@import "src/styles/main.scss";
+
+.btn-primary{
+    height: 54px;
+    border: none;
+    border-radius: 0 !important;
+    padding: 15px 30px;
+    box-shadow: none;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: color(blue);
+    transition: 0.3s all ease-in-out;
+
+    &:active{
+        box-shadow: none !important;
+        color: color(darkgrey);
+    }
+
+    &:hover{
+        background-color: rgb(0, 141, 208);
+    }
+
+}
