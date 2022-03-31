@@ -27,9 +27,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String phoneNumber;
-
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "roleId")
     private Role role;
@@ -41,6 +38,16 @@ public class User implements UserDetails {
     private Boolean isDeleted;
 
     public User() {}
+
+    public User(String firstName, String lastName, String email, String password, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.isEnabled = true;
+        this.isDeleted = false;
+    }
 
     public Long getId() {
         return id;
@@ -60,10 +67,6 @@ public class User implements UserDetails {
 
     public String getPassword() {
         return password;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
     }
 
     public Role getRole() {
@@ -96,10 +99,6 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public void setRole(Role role) {
