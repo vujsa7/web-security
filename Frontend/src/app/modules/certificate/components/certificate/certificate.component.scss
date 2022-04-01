@@ -2,10 +2,7 @@
 
 .certificate-wrapper{
     width: 100vw;
-    height: 100vh;
-    padding-left: 80px;
-    padding-right: 80px;
-    padding-top: 40px;
+    padding: 0 $grid-margin-width;
 }
 
     .full-name{

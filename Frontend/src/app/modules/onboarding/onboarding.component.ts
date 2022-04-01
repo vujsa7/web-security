@@ -13,15 +13,16 @@ export class OnboardingComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router, private spinner: NgxSpinnerService) { }
 
   ngOnInit(): void {
-    this.authService.setToken('');
     this.spinner.show();
 
     setTimeout(() => {
-      if(this.authService.getToken() != null && this.authService.getToken() != ''){
+      if(this.authService.hasValidToken()){
+        console.log("Session token has expired. Flushing...")
         this.router.navigate(['certificates']);
       } else {
         this.router.navigate(['onboarding/login']);
       }
+
       this.spinner.hide();
     }, 1000);
     

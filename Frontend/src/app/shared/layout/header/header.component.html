@@ -1,0 +1,8 @@
+<header *ngIf="isVisible">
+    <nav class="navbar">
+        <a class="nav-item nav-link" routerLink="/certificates" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Dashboard</a>
+        <a class="nav-item nav-link" routerLink="/certificates/issue" routerLinkActive="active">Issue a certificate</a>
+        <a class="nav-item nav-link" routerLink="/certificates/revoke" routerLinkActive="active">Revoke a certificate</a>
+        <a class="nav-item nav-link" (click)="logout()">Logout</a>
+    </nav>
+</header>

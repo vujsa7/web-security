@@ -25,6 +25,10 @@ export class AuthService {
         localStorage.setItem('jwtToken', data);
     }
 
+    flushToken(): void{
+        localStorage.removeItem('jwtToken');
+    }
+
     getHeader(): HttpHeaders {
         let token = localStorage.getItem('jwtToken');
         let header = new HttpHeaders().set('Content-Type', 'application/json');
@@ -35,32 +39,51 @@ export class AuthService {
         return header;
     }
 
-    getToken(): any {
-        return localStorage.getItem('jwtToken');
+    hasValidToken(): boolean{
+        let token = this.getToken();
+        if(token == null){
+            return false;
+        } else {
+            let decodedToken = this.getDecodedAccessToken(token);
+            if(decodedToken.exp < Date.now() / 1000){
+                this.flushToken();
+                return false;
+            }
+        }
+        return true;
     }
 
     getTokenRole(): any {
-        let decodedToken = this.getDecodedAccessToken(localStorage.getItem('jwtToken') || '');
-        if (decodedToken == null) {
+        var token = this.getToken();
+        if(token == null){
             return 'ROLE_UNSIGNED';
+        } else {
+            let decodedToken = this.getDecodedAccessToken(token);
+            return decodedToken.role;
         }
-        return decodedToken.role;
     }
 
     getTokenUsername(): any {
-        let decodedToken = this.getDecodedAccessToken(localStorage.getItem('jwtToken') || '');
-        if (decodedToken == null) {
+        var token = this.getToken();
+        if(token == null){
             return null;
+        } else {
+            let decodedToken = this.getDecodedAccessToken(token);
+            return decodedToken.sub;
         }
-        return decodedToken.sub;
     }
 
-    getDecodedAccessToken(token: string): any {
+    private getDecodedAccessToken(token: string): any {
         try {
             return jwt_decode(token);
         } catch (Error) {
             return null;
         }
+    }
+
+    public getToken(): any {
+        var token = localStorage.getItem('jwtToken');
+        return token;
     }
 
 }

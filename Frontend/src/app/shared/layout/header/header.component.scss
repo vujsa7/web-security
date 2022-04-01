@@ -1,0 +1,17 @@
+@import 'src/styles/main.scss';
+
+.navbar{
+    padding: 20px $grid-margin-width 20px;
+    justify-content: flex-end !important;
+}
+
+    .nav-item{
+        display: inline-block;
+        cursor: pointer;
+        color: color(darkgrey) !important;
+    }
+
+    .active{
+        font-weight: bold;
+        color: color(blue) !important;
+    }

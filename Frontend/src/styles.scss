@@ -9,13 +9,14 @@
 }
   
 html {
+    height: 100%;
     width: 100%;
     font-size: 100%;
 } /*16px*/
 
 body {
+    height: 100%;
     width: 100%;
-    min-height: 100vh;
     overflow-x: hidden;
 }
 
@@ -107,7 +108,7 @@ a, img{
 }
 
 hr{
-    background-color: color(darkgrey);
+    background-color: color(darkgrey) !important;
     margin: 12px 0 12px 0;
 }
 

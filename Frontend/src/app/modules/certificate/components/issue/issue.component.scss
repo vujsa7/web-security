@@ -1,0 +1,76 @@
+@import 'src/styles/main.scss';
+
+.issue-wrapper{
+    padding: 0 $grid-margin-width;
+}
+
+    h3{
+        color: color(blue) !important;
+    }
+
+    hr{
+        margin-left: -$grid-margin-width;
+        margin-right: -$grid-margin-width;
+        margin-bottom: 0px;
+    }
+
+    .template-wrapper{
+        padding: 30px;
+        width: 20%;
+    }
+
+        .radio-button-wrapper {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: color(darkgrey);
+        }
+
+            label{
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+            }
+
+                .radio-button {
+                    margin-right: 8px;
+                    cursor: pointer;
+                    margin-left: 2px;
+                    box-shadow: none !important;
+                    width: 20px;
+                    height: 20px;
+                }
+
+    .issue-form-wrapper{
+        border-left: 1px solid color(lightgrey);
+        width: 80%;
+        padding: 30px 80px 30px 80px;
+    }
+
+        .form-part{
+            width: 33.33%;
+            margin-left: 15px;
+            margin-right: 15px;
+
+            &:first-child{
+                margin-left: 0;
+            }
+
+            &:last-child{
+                margin-right: 0;
+            }
+        }
+
+            .input-container{
+                margin-bottom: 20px;
+            }
+
+        .create-btn{
+            width: calc(33.33% - 20px);
+            align-self: flex-end;
+
+        }
+
+
