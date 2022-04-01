@@ -1,0 +1,26 @@
+@import 'src/styles/main.scss';
+
+.certificate-wrapper{
+    width: 100vw;
+    height: 100vh;
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 40px;
+}
+
+    .full-name{
+        font-weight: bold;
+        color: darkgrey;
+        font-size: 16px;
+    }
+
+    .logout{
+        color: darkgrey;
+        font-size: 16px;
+    }
+
+    .title{
+        font-weight: bold;
+        color: #006494;
+        font-size: 25px;
+    }
