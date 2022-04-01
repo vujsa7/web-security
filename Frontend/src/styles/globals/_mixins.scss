@@ -1,0 +1,21 @@
+@mixin background-svg($svg) {
+    background-image: svg-url($svg);
+}
+
+@mixin icon {
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+}
+
+@mixin noselect{
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none; 
+    user-select: none;                
+}

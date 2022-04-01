@@ -1,1 +1,226 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'src/styles/main.scss';
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: $base-font-family;
+}
+  
+html {
+    width: 100%;
+    font-size: 100%;
+} /*16px*/
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: $bold-font-weight !important;
+  margin: 0px !important;
+  color: color(black);
+}
+
+h1 {
+    font-size: $h1-size !important;
+
+    @include media("<desktop-small") {
+        font-size: $h2-size !important;
+    }
+
+    @include media("<tablet") {
+        font-size: $h3-size !important;
+    }
+
+    @include media("<phone-large") {
+        font-size: $h4-size !important;
+    }
+}
+  
+h2 {
+    font-size: $h2-size !important;
+
+    @include media("<desktop-small") {
+        font-size: $h3-size !important;
+    }
+
+    @include media("<tablet") {
+        font-size: $h4-size !important;
+    }
+}
+  
+h3 {
+    font-size: $h3-size !important;
+
+    @include media("<tablet") {
+        font-size: $h4-size !important;
+    }
+}
+  
+h4 {
+    font-size: $h4-size !important;
+}
+
+.form-control, textarea {
+    color: color(blue) !important;
+    border: 1px solid color(darkgrey) !important;
+    border-radius: 0 !important;
+}
+
+.form-control:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+textarea{
+    resize: none !important;
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    padding: 6px 12px !important;
+}
+
+/* clears the 'X' from Internet Explorer */
+input[type=search]::-ms-clear {  display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal {  display: none; width : 0; height: 0; }
+
+/* clears the 'X' from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+a, img{
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+hr{
+    background-color: color(darkgrey);
+    margin: 12px 0 12px 0;
+}
+
+:root {
+    accent-color: color(blue);
+}
+
+
+// My custom input for floating label
+.input-container {
+    text-align: center;
+    border: solid 1px color(darkgrey);
+    position: relative;
+    background-color: white;
+    padding: 25px 14px 8px 14px;
+
+    input {
+        color: color(blue);
+        border: none;
+        outline: 0;
+        font-size: 14px;
+        width: 100%;
+        background-color: transparent;
+    }
+
+    textarea{
+        color: color(blue);
+        font-size: 14px;
+        resize: none;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        background-color: transparent;
+
+        &:focus{
+            box-shadow: none;
+            border: none;
+            overflow: auto;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+        }
+    }
+
+    select{
+        color: color(blue);
+        font-size: 14px;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background-color: transparent;
+        
+        &:focus{
+            box-shadow: none;
+            border: none;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+        }
+    }
+
+    .error-message{
+        position: absolute;
+        top: 58px;
+        left: 0px;
+        color: color(red);
+        font-size: 12px;
+    }
+}
+
+.input-container-error{
+    background-color: rgb(255, 208, 208);
+    border-color: color(red);
+}
+
+.input-label {
+    color: color(darkgrey);
+    font-size: 14px;
+    position: absolute;
+    top: 6px;
+    left: 14px;
+}
+
+a{
+    text-decoration: none !important;
+    color: color(blue) !important;
+    transition: 0.3s all ease-in-out;
+
+    &:hover{
+        color: rgb(0, 141, 208) !important;
+    }
+}
+
+.grey-text{
+    color: color(darkgrey);
+}
+
+.c-toast-container{
+    padding: 0 !important;
+}
+  
+    .c-toast{
+        padding: 10px 20px;
+        border-radius: 0 !important;
+        border: 0;
+        margin: 15px $grid-margin-width 15px 0 !important;
+    }
+  
+    .c-toast--success{
+        background-color: color(green) !important;
+    }
+  
+    .c-toast--error{
+      background-color: color(red) !important;
+    }

@@ -1,0 +1,20 @@
+@import 'src/styles/main.scss';
+
+.wrapper{
+    border: 1px solid #F2F2F2;
+}
+
+    .darkgray-text{
+        font-size: 16px;
+        color: color(darkgray);
+    }
+
+    .blue-text{
+        font-size: 20px;
+        color: #006494;
+        font-weight: bold;
+    }
+
+    .button-wrapper{
+        margin-left: auto;
+    }

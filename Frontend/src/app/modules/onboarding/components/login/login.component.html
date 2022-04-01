@@ -1,0 +1,20 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center">
+    <div class="login-form-wrapper d-flex flex-column">
+        <app-allsafe-logo class="logo"></app-allsafe-logo>
+        <form class="d-flex flex-column align-items-center" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="input-container w-100" [ngClass]="{'input-container-error' : (loginForm.controls.username.touched && loginForm.controls.username.errors)}">
+                <label for="email" class="input-label">Email address</label>
+                <input id="email" type="text" name="email" formControlName="username" (keyup.enter)="onSubmit()">
+                <span class="error-message" *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.['required']">Email address cannot be empty.</span>
+                <span class="error-message" *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.['email']">You must enter valid email address.</span>
+            </div>
+            <div class="input-container w-100" [ngClass]="{'input-container-error' : (loginForm.controls.password.touched && loginForm.controls.password.errors?.['required'])}">
+                <label for="password" class="input-label">Password</label>
+                <input id="password" type="password" name="password" formControlName="password" (keyup.enter)="onSubmit()">
+                <span class="error-message" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.['required']">Password cannot be empty.</span>
+            </div>
+            <app-primary-button [text]="'Login'" class="w-100" [disabled]="!loginForm.valid" (click)="onSubmit()"></app-primary-button>
+            <span class="grey-text">Don't have an account?<a routerLink="/onboarding/register"> Register today.</a></span>
+        </form>
+    </div>
+</div>

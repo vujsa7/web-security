@@ -13,20 +13,24 @@ export class AuthService {
 
     constructor(private http: HttpClient) { }
 
-    login(loginRequest: Object): Observable<any>{
+    login(loginRequest: Object): Observable<any> {
         return this.http.post<any>(this.baseUrl + 'auth', loginRequest);
+    }
+
+    register(registerRequest: Object): Observable<any>{
+        return this.http.post<any>(this.baseUrl + 'users', registerRequest);
     }
 
     setToken(data: string): void {
         localStorage.setItem('jwtToken', data);
     }
 
-    getHeader() : HttpHeaders{
+    getHeader(): HttpHeaders {
         let token = localStorage.getItem('jwtToken');
         let header = new HttpHeaders().set('Content-Type', 'application/json');
-        if(token != null){
+        if (token != null) {
             header = new HttpHeaders().set('Content-Type', 'application/json')
-                                    .set('Authorization',  'Bearer ' + localStorage.getItem('jwtToken'));
+                .set('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
         }
         return header;
     }
@@ -35,17 +39,17 @@ export class AuthService {
         return localStorage.getItem('jwtToken');
     }
 
-    getTokenRole(): any{
+    getTokenRole(): any {
         let decodedToken = this.getDecodedAccessToken(localStorage.getItem('jwtToken') || '');
-        if(decodedToken == null){
+        if (decodedToken == null) {
             return 'ROLE_UNSIGNED';
         }
         return decodedToken.role;
     }
 
-    getTokenUsername(): any{
+    getTokenUsername(): any {
         let decodedToken = this.getDecodedAccessToken(localStorage.getItem('jwtToken') || '');
-        if(decodedToken == null){
+        if (decodedToken == null) {
             return null;
         }
         return decodedToken.sub;
@@ -54,7 +58,7 @@ export class AuthService {
     getDecodedAccessToken(token: string): any {
         try {
             return jwt_decode(token);
-        } catch(Error) {
+        } catch (Error) {
             return null;
         }
     }
