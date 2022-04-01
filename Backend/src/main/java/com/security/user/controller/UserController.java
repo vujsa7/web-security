@@ -33,7 +33,7 @@ public class UserController {
             return new ResponseEntity<>(userDto, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        User user = new User(userDto.getFirstName(), userDto.getLastName(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), roleService.findByName("ROLE_USER"));
+        User user = new User(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), roleService.findByName("ROLE_USER"));
         userService.save(user);
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
