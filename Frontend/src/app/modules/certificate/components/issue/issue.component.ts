@@ -30,7 +30,7 @@ export class IssueComponent {
 
   private initializeSubjectTypes() {
     this.subjectTypes.push("Certificate Authority");
-    this.subjectTypes.push("End Antity");
+    this.subjectTypes.push("End Entity");
   }
 
 }

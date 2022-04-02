@@ -2,16 +2,6 @@
     <div class="register-form-wrapper d-flex flex-column">
         <app-allsafe-logo class="logo"></app-allsafe-logo>
         <form class="d-flex flex-column align-items-center" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-            <div class="input-container w-100" [ngClass]="{'input-container-error' : (registerForm.controls.firstName.touched && registerForm.controls.firstName.errors?.['required'])}">
-                <label for="firstName" class="input-label">First name</label>
-                <input id="firstName" type="text" name="firstName" formControlName="firstName" (keyup.enter)="onSubmit()">
-                <span class="error-message" *ngIf="registerForm.controls.firstName.touched && registerForm.controls.firstName.errors?.['required']">First name cannot be empty.</span>
-            </div>
-            <div class="input-container w-100" [ngClass]="{'input-container-error' : (registerForm.controls.lastName.touched && registerForm.controls.lastName.errors?.['required'])}">
-                <label for="lastName" class="input-label">Last name</label>
-                <input id="lastName" type="text" name="lastName" formControlName="lastName" (keyup.enter)="onSubmit()">
-                <span class="error-message" *ngIf="registerForm.controls.lastName.touched && registerForm.controls.lastName.errors?.['required']">Last name cannot be empty.</span>
-            </div>
             <div class="input-container w-100" [ngClass]="{'input-container-error' : (registerForm.controls.email.touched && registerForm.controls.email.errors)}">
                 <label for="email" class="input-label">Email address</label>
                 <input id="email" type="text" name="email" formControlName="email" (keyup.enter)="onSubmit()">
