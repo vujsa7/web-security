@@ -36,11 +36,11 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
             certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(subjectData.getCa()));
 
             // zakucano !
-            KeyUsage keyUsage = new KeyUsage(KeyUsage.keyCertSign);
+            KeyUsage keyUsage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign | KeyUsage.dataEncipherment);
             certGen.addExtension(Extension.keyUsage, false, keyUsage);
 
             // zakucano !
-            certGen.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth}));
+            certGen.addExtension(Extension.extendedKeyUsage, true, new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_eapOverLAN}));
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
