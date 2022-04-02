@@ -14,7 +14,7 @@ public class CertificateDto {
     private String email;
     private Date notBefore;
     private Date notAfter;
-    private Boolean ca; // BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
-    private List<KeyUsage> keyUsage;
-    private List<KeyPurposeId> enhancedKeyUsage;
+    private Boolean ca;
+    private int[] keyUsage;
+    private KeyPurposeId[] enhancedKeyUsage;
 }
