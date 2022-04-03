@@ -30,6 +30,14 @@ public class Certificate {
     public Certificate() {
     }
 
+    public Certificate(String serialNumber, String alias, Date validFrom, Date validTo, User user) {
+        this.serialNumber = serialNumber;
+        this.alias = alias;
+        this.validFrom = validFrom;
+        this.validTo = validTo;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }

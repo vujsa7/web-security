@@ -2,6 +2,8 @@ package com.security.certificate.service.impl;
 
 import com.security.certificate.factory.extended.key.usage.ExtendedKeyUsageFactory;
 import com.security.certificate.factory.key.usage.KeyUsageFactory;
+import com.security.certificate.model.CertificateType;
+import com.security.certificate.model.KeyPurposeIdType;
 import com.security.certificate.service.CertificateGeneratorService;
 import com.security.data.IssuerData;
 import com.security.data.SubjectData;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -33,12 +36,15 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
     }
 
     @Override
-    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeId[] extendedKeyUsage) {
+    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateType certificateType) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
 
             ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
+
+            KeyPair subjectKeyPair = generateKeyPair();
+            subjectData.setPublicKey(subjectKeyPair.getPublic());
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerData.getX500name(),
                     new BigInteger(subjectData.getSerialNumber()),
@@ -48,17 +54,31 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
                     subjectData.getPublicKey());
 
             certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(subjectData.getCa()));
-            certGen.addExtension(Extension.keyUsage, false, keyUsageFactory.createInstance(keyUsage));
-            certGen.addExtension(Extension.extendedKeyUsage, true, extendedKeyUsageFactory.createInstance(extendedKeyUsage));
+            certGen.addExtension(Extension.keyUsage, false, certificateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateType));
+            certGen.addExtension(Extension.extendedKeyUsage, true, certificateType == null ? extendedKeyUsageFactory.createInstance(extendedKeyUsage) : extendedKeyUsageFactory.createInstance(certificateType));
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
             certConverter = certConverter.setProvider("BC");
 
+            // TODO: save to keystore
             return certConverter.getCertificate(certHolder);
         } catch (IllegalArgumentException | IllegalStateException | OperatorCreationException | CertificateException | CertIOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    private KeyPair generateKeyPair() {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+            keyGen.initialize(2048, random);
+            return keyGen.generateKeyPair();
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 }

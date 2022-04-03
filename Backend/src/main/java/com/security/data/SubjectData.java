@@ -16,8 +16,7 @@ public class SubjectData {
     public SubjectData() {
     }
 
-    public SubjectData(PublicKey publicKey, X500Name x500name, String serialNumber, Date startDate, Date endDate, Boolean ca) {
-        this.publicKey = publicKey;
+    public SubjectData(X500Name x500name, String serialNumber, Date startDate, Date endDate, Boolean ca) {
         this.x500name = x500name;
         this.serialNumber = serialNumber;
         this.startDate = startDate;
