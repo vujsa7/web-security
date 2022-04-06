@@ -6,13 +6,20 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { CertificateCardComponent } from './components/certificate-card/certificate-card.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { RouterModule } from '@angular/router';
+import { KeyUsagePipe } from './pipes/key-usage.pipe';
+import { ExtendedKeyUsagePipe } from './pipes/extended-key-usage.pipe';
 
 
 @NgModule({
   declarations: [
+    // My components
     PrimaryButtonComponent,
     CertificateCardComponent,
-    HeaderComponent
+    HeaderComponent,
+
+    // My custom pipes
+    KeyUsagePipe,
+    ExtendedKeyUsagePipe
   ],
   imports: [
     CommonModule,
@@ -22,13 +29,18 @@ import { RouterModule } from '@angular/router';
     NgxSpinnerModule
   ],
   exports:[
-    // My declared components
+
+    // My components
     PrimaryButtonComponent,
     CertificateCardComponent,
     HeaderComponent,
     ReactiveFormsModule,
     FormsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+
+    // My custom pipes
+    KeyUsagePipe,
+    ExtendedKeyUsagePipe
   ]
 })
 export class SharedModule { }

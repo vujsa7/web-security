@@ -7,6 +7,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { IssueComponent } from './components/issue/issue.component';
 import { RevokeComponent } from './components/revoke/revoke.component';
+import { KeyUsageService } from './services/key-usage.service';
+import { CertificateService } from './services/certificate.service';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,13 @@ import { RevokeComponent } from './components/revoke/revoke.component';
   imports: [
     CommonModule,
     CertificateRoutingModule,
-    SharedModule
+    SharedModule,
+    NgbDatepickerModule
+  ],
+  providers: [
+    KeyUsageService,
+    CertificateService,
+    
   ]
 })
 export class CertificateModule { }

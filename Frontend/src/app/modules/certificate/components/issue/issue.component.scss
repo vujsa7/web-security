@@ -63,14 +63,48 @@
             }
         }
 
+            h4{
+                color: color(darkgrey);
+                margin-bottom: 20px !important;
+            }
+
             .input-container{
+                height: 59px;
                 margin-bottom: 20px;
             }
 
         .create-btn{
             width: calc(33.33% - 20px);
             align-self: flex-end;
-
         }
+
+        .key-usage-grid{
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            row-gap: 10px;
+            color: color(darkgrey);
+            margin-bottom: 20px;
+        }
+
+            .checkbox{
+                cursor: pointer;
+                min-width: 16px;
+                height: 16px;
+            }
+
+            .checkbox-label{
+                margin-left: 5px;
+                @include noselect;
+            }
+
+        .extended-key-usage-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            row-gap: 10px;
+            color: color(darkgrey);
+            margin-bottom: 20px;
+        }
+            
 
 

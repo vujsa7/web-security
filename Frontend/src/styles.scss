@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'src/styles/main.scss';
 
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+
 * {
     padding: 0;
     margin: 0;
@@ -131,6 +134,7 @@ hr{
         outline: 0;
         font-size: 14px;
         width: 100%;
+        text-align: start;
         background-color: transparent;
     }
 
@@ -225,3 +229,9 @@ a{
     .c-toast--error{
       background-color: color(red) !important;
     }
+
+.dropdown-menu, .btn-light{
+    border-radius: 0 !important;
+}
+
+
