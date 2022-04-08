@@ -4,11 +4,13 @@ import java.util.Date;
 
 public class ValidCertificateDto {
     private String serialNumber;
+    private String commonName;
     private Date validFrom;
     private Date validTo;
 
-    public ValidCertificateDto(String serialNumber, Date validFrom, Date validTo) {
+    public ValidCertificateDto(String serialNumber, String commonName, Date validFrom, Date validTo) {
         this.serialNumber = serialNumber;
+        this.commonName = commonName;
         this.validFrom = validFrom;
         this.validTo = validTo;
     }
@@ -20,6 +22,10 @@ public class ValidCertificateDto {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+
+    public String getCommonName() { return commonName; }
+
+    public void setCommonName(String commonName) { this.commonName = commonName; }
 
     public Date getValidFrom() {
         return validFrom;
@@ -36,4 +42,5 @@ public class ValidCertificateDto {
     public void setValidTo(Date validTo) {
         this.validTo = validTo;
     }
+
 }

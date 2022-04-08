@@ -53,7 +53,7 @@
                         <div class="input-container w-100">
                             <label for="cert" class="input-label">Certificate to sign with</label>
                             <select id="cert" name='cert' formControlName="signWith" (change)="signWithChanged()">
-                                <option *ngFor="let signingCertificate of signingCertificates" [ngValue]="signingCertificate">{{signingCertificate.serialNumber}}</option>
+                                <option *ngFor="let signingCertificate of signingCertificates" [ngValue]="signingCertificate">{{signingCertificate.commonName}}</option>
                             </select>
                         </div>
                         <div class="input-container w-100">

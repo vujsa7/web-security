@@ -55,7 +55,7 @@ public class CertificateController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<ValidCertificateDto> getValidCertificates(@PathVariable() String username){
         return certificateService.getValidCertificatesByUsersEmail(username).stream()
-                .map(cert -> new ValidCertificateDto(cert.getSerialNumber(), cert.getValidFrom(), cert.getValidTo()))
+                .map(cert -> new ValidCertificateDto(cert.getSerialNumber(), cert.getCommonName(), cert.getValidFrom(), cert.getValidTo()))
                 .collect(Collectors.toList());
     }
 
@@ -69,15 +69,41 @@ public class CertificateController {
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
                 certificateDto.getExtendedKeyUsage(), null);
-        certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail());
+        certificateService.saveRootCertificate(certificate, keyPair.getPrivate(), certificateDto.getCa(), certificateDto.getEmail());
 
         return new ResponseEntity<>("Root certificate successfully created.", HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/certificates")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<String> createCertificate(@RequestBody CertificateDto certificateDto, @RequestParam(required = false) CertificateType certificateType){
+    public ResponseEntity<String> createCertificate(Principal principal, @RequestBody CertificateDto certificateDto,
+                                                    @RequestParam(required = false) CertificateType certificateType){
         // TODO: get issuer data by serial num of cert which is going to be used for signing (from keystore) and validate user
+        Certificate issuerCertificate = certificateService.getValidCertificateBySerialNumber(certificateDto.getSignWith());
+        if(issuerCertificate == null)
+            return new ResponseEntity<>("Sorry, certificate used for signing is not valid anymore or it does not exist in our records.", HttpStatus.BAD_REQUEST);
+        if(!issuerCertificate.getUser().getEmail().equals(principal.getName()) || !issuerCertificate.isCa())
+            return new ResponseEntity<>("Unable to sign with the requested certificate.", HttpStatus.FORBIDDEN);
+        if(!issuerCertificate.isInValidDateRange(certificateDto.getValidFrom(), certificateDto.getValidTo())){
+            return new ResponseEntity<>("Unsuccessful. Invalid dates used for signing, please check the date ranges and try again.", HttpStatus.BAD_REQUEST);
+        }
+
+        // TODO: Create a method for validating certificate chain (check if any of certificates is revoked in the chain)
+        if(!certificateService.isCertificateChainValid(issuerCertificate))
+            return new ResponseEntity<>("Unable to issue new certificate because of invalid certificate chain. Either a " +
+                    "certificate in the chain was revoked or isn't valid anymore.", HttpStatus.BAD_REQUEST);
+
+        KeyPair keyPair = certificateGeneratorService.generateKeyPair();
+        SubjectData subjectData = dataService.generateSubjectData(certificateDto, keyPair.getPublic());
+        IssuerData issuerData = certificateService.getIssuerData(issuerCertificate.getAlias());
+
+        X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
+                certificateDto.getExtendedKeyUsage(), null);
+
+
+
+
+
 //        IssuerData issuerData = generateIssuerData();
 //
 //        // construct subject data
@@ -108,7 +134,7 @@ public class CertificateController {
 //        Certificate certificate = new Certificate(subjectData.getSerialNumber(), "getAliasHere", subjectData.getStartDate(), subjectData.getEndDate(), user);
 //        certificateService.save(certificate);
 
-        return new ResponseEntity<>("Certificate generated", HttpStatus.CREATED);
+        return new ResponseEntity<>(principal.getName(), HttpStatus.CREATED);
     }
 
 

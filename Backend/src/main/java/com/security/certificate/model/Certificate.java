@@ -18,6 +18,12 @@ public class Certificate {
     private String alias;
 
     @Column(nullable = false)
+    private String commonName;
+
+    @Column(nullable = false)
+    private boolean ca;
+
+    @Column(nullable = false)
     private Date validFrom;
 
     @Column(nullable = false)
@@ -30,8 +36,10 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(String serialNumber, String alias, Date validFrom, Date validTo, User user) {
+    public Certificate(String serialNumber, String commonName, boolean ca, String alias, Date validFrom, Date validTo, User user) {
         this.serialNumber = serialNumber;
+        this.commonName = commonName;
+        this.ca = ca;
         this.alias = alias;
         this.validFrom = validFrom;
         this.validTo = validTo;
@@ -62,6 +70,14 @@ public class Certificate {
         this.alias = alias;
     }
 
+    public String getCommonName() { return commonName; }
+
+    public void setCommonName(String commonName) { this.commonName = commonName; }
+
+    public boolean isCa() { return ca; }
+
+    public void setCa(boolean ca) { this.ca = ca; }
+
     public Date getValidFrom() {
         return validFrom;
     }
@@ -84,5 +100,11 @@ public class Certificate {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isInValidDateRange(Date validFrom, Date validTo){
+        if(this.validFrom.compareTo(validFrom) < 0 && this.validTo.compareTo(validTo) > 0)
+            return true;
+        return false;
     }
 }

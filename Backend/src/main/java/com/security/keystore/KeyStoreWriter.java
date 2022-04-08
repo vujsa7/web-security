@@ -20,17 +20,20 @@ public class KeyStoreWriter {
 
     public void loadKeyStore(String fileName, char[] password){
         try {
-            if(fileName != null) {
-                keyStore.load(new FileInputStream(fileName), password);
-            } else {
-                keyStore.load(null, password);
-            }
+            // Try to load existing keystore file
+            keyStore.load(new FileInputStream(fileName), password);
         } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
             e.printStackTrace();
+            try {
+                // Try to create new keystore file if there is no existing
+                keyStore.load(null, password);
+            } catch (NoSuchAlgorithmException | CertificateException | IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
-    public void saveKeyStore(String fileName, char[] password){
+    public void saveKeyStore(String fileName, char[] password) {
         try{
             keyStore.store(new FileOutputStream(fileName), password);
         } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {

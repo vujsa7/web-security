@@ -2,6 +2,7 @@ package com.security.user.service.impl;
 
 import com.security.certificate.dao.CertificateRepository;
 import com.security.certificate.model.Certificate;
+import com.security.certificate.service.impl.CertificateServiceImpl;
 import com.security.config.WebSecurityConfig;
 import com.security.user.dao.UserRepository;
 import com.security.user.model.User;
@@ -57,7 +58,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User generateDefaultUser(String email) {
-        return new User(email, new BCryptPasswordEncoder().encode("changeit"), roleService.findByName("ROLE_USER"));
+    public User fetchOrCreateDefaultUser(String email) {
+        User user = findByEmail(email);
+        if(user == null) {
+            user = new User(email, new BCryptPasswordEncoder().encode("changeit"), roleService.findByName("ROLE_USER"));
+        }
+        return user;
     }
 }

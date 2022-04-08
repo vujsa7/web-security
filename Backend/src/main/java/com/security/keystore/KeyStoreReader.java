@@ -39,6 +39,7 @@ public class KeyStoreReader {
         return null;
     }
 
+    /** Reads last certificate in the certificate chain, last being the latest issued certificate */
     public Certificate readCertificate(String keyStoreFile, String keyStorePass, String alias) {
         try {
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");
