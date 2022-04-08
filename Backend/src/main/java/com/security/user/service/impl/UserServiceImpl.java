@@ -2,13 +2,17 @@ package com.security.user.service.impl;
 
 import com.security.certificate.dao.CertificateRepository;
 import com.security.certificate.model.Certificate;
+import com.security.config.WebSecurityConfig;
 import com.security.user.dao.UserRepository;
 import com.security.user.model.User;
+import com.security.user.service.RoleService;
 import com.security.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final CertificateRepository certificateRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository){
+    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository, RoleService roleService){
         this.userRepository = userRepository;
         this.certificateRepository = certificateRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -48,5 +54,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User generateDefaultUser(String email) {
+        return new User(email, new BCryptPasswordEncoder().encode("changeit"), roleService.findByName("ROLE_USER"));
     }
 }

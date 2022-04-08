@@ -7,10 +7,10 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
-public class KeystoreWriter {
+public class KeyStoreWriter {
     private KeyStore keyStore;
 
-    public KeystoreWriter(){
+    public KeyStoreWriter(){
         try {
             keyStore = KeyStore.getInstance("JKS", "SUN");
         } catch (KeyStoreException | NoSuchProviderException e) {

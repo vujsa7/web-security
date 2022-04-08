@@ -71,7 +71,7 @@
                         <h4>Basic constraint</h4>
                         <div class="input-container w-100">
                             <label for="subject-type" class="input-label">Subject Type</label>
-                            <select id="subject-type" name='subject-type' formControlName="subjectType">
+                            <select id="subject-type" name='subject-type' formControlName="subjectType" (change)="subjectTypeChanged()">
                                 <option *ngFor="let subjectType of subjectTypes">{{subjectType}}</option>
                             </select>
                         </div>

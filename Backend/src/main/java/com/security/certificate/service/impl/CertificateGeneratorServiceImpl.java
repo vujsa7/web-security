@@ -5,8 +5,8 @@ import com.security.certificate.factory.key.usage.KeyUsageFactory;
 import com.security.certificate.model.CertificateType;
 import com.security.certificate.model.KeyPurposeIdType;
 import com.security.certificate.service.CertificateGeneratorService;
-import com.security.data.IssuerData;
-import com.security.data.SubjectData;
+import com.security.data.model.IssuerData;
+import com.security.data.model.SubjectData;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -38,38 +38,43 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
     @Override
     public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateType certificateType) {
         try {
+            // Creating builder for signing the certificate
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
-
             ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
 
             KeyPair subjectKeyPair = generateKeyPair();
             subjectData.setPublicKey(subjectKeyPair.getPublic());
 
-            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(issuerData.getX500name(),
+            X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                    issuerData.getX500name(),
                     new BigInteger(subjectData.getSerialNumber()),
                     subjectData.getStartDate(),
                     subjectData.getEndDate(),
                     subjectData.getX500name(),
-                    subjectData.getPublicKey());
+                    subjectData.getPublicKey()
+            );
 
             certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(subjectData.getCa()));
-            certGen.addExtension(Extension.keyUsage, false, certificateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateType));
-            certGen.addExtension(Extension.extendedKeyUsage, true, certificateType == null ? extendedKeyUsageFactory.createInstance(extendedKeyUsage) : extendedKeyUsageFactory.createInstance(certificateType));
+            certGen.addExtension(Extension.keyUsage, false,
+                    certificateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateType));
+            certGen.addExtension(Extension.extendedKeyUsage, true,
+                    certificateType == null ? extendedKeyUsageFactory.createInstance(extendedKeyUsage) : extendedKeyUsageFactory.createInstance(certificateType));
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
             certConverter = certConverter.setProvider("BC");
 
-            // TODO: save to keystore
-            return certConverter.getCertificate(certHolder);
+            X509Certificate cert = certConverter.getCertificate(certHolder);
+            return cert;
         } catch (IllegalArgumentException | IllegalStateException | OperatorCreationException | CertificateException | CertIOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private KeyPair generateKeyPair() {
+    @Override
+    public KeyPair generateKeyPair() {
         try {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
@@ -78,7 +83,8 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
             e.printStackTrace();
         }
-
         return null;
     }
+
+
 }

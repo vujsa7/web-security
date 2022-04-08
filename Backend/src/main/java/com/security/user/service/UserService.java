@@ -8,4 +8,5 @@ public interface UserService extends UserDetailsService {
     void save(User user);
     void save(User user, Certificate certificate);
     User findByEmail(String email);
+    User generateDefaultUser(String email);
 }

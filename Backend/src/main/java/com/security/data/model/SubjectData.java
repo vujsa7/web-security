@@ -1,4 +1,4 @@
-package com.security.data;
+package com.security.data.model;
 
 import org.bouncycastle.asn1.x500.X500Name;
 
@@ -16,7 +16,8 @@ public class SubjectData {
     public SubjectData() {
     }
 
-    public SubjectData(X500Name x500name, String serialNumber, Date startDate, Date endDate, Boolean ca) {
+    public SubjectData(PublicKey publicKey, X500Name x500name, String serialNumber, Date startDate, Date endDate, Boolean ca) {
+        this.publicKey = publicKey;
         this.x500name = x500name;
         this.serialNumber = serialNumber;
         this.startDate = startDate;
