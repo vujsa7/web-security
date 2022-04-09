@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.x500.X500Principal;
+import java.math.BigInteger;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -25,11 +27,13 @@ public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
 
     private final UserService userService;
+    private final SecureRandom secureRandom;
 
     @Autowired
     public CertificateServiceImpl(CertificateRepository certificateRepository, UserService userService) {
         this.certificateRepository = certificateRepository;
         this.userService = userService;
+        this.secureRandom = new SecureRandom();
     }
 
     @Override
@@ -45,7 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
         keyStoreWriter.loadKeyStore(rootKeyStoreLocation, "changeit".toCharArray());
         X509Certificate[] certificateChain = new X509Certificate[1];
         certificateChain[0] = certificate;
-        String alias = "allsafe-root"; // TODO: Change programatically if there are more than one root CA
+        String alias = "root-" + new BigInteger(8 * 40, secureRandom).toString();
         keyStoreWriter.write(alias, privateKey, "changeit".toCharArray(), certificateChain);
         keyStoreWriter.saveKeyStore(rootKeyStoreLocation, "changeit".toCharArray());
 

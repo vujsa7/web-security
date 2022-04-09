@@ -54,7 +54,7 @@ public class DataServiceImpl implements DataService {
         builder.addRDN(BCStyle.C, certificateDto.getCountry());
         builder.addRDN(BCStyle.ST, certificateDto.getState());
         builder.addRDN(BCStyle.L, certificateDto.getLocal());
-        builder.addRDN(BCStyle.E, "nikola.luburic@uns.ac.rs");
+//        builder.addRDN(BCStyle.E, "nikola.luburic@uns.ac.rs");
         return new IssuerData(builder.build(), privateKey);
     }
 
