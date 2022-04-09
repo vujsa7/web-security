@@ -17,11 +17,14 @@ public class Certificate {
     @Column(nullable = false, unique = true)
     private String alias;
 
+    @Column()
+    private String issuerAlias;
+
     @Column(nullable = false)
     private String commonName;
 
     @Column(nullable = false)
-    private boolean ca;
+    private String certificateType;
 
     @Column(nullable = false)
     private Date validFrom;
@@ -36,11 +39,12 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(String serialNumber, String commonName, boolean ca, String alias, Date validFrom, Date validTo, User user) {
+    public Certificate(String serialNumber, String commonName, String certificateType, String alias, String issuerAlias, Date validFrom, Date validTo, User user) {
         this.serialNumber = serialNumber;
         this.commonName = commonName;
-        this.ca = ca;
+        this.certificateType = certificateType;
         this.alias = alias;
+        this.issuerAlias = issuerAlias;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.user = user;
@@ -70,13 +74,21 @@ public class Certificate {
         this.alias = alias;
     }
 
+    public String getIssuerAlias() {
+        return issuerAlias;
+    }
+
+    public void setIssuesAlias(String issuerAlias) {
+        this.issuerAlias = issuerAlias;
+    }
+
     public String getCommonName() { return commonName; }
 
     public void setCommonName(String commonName) { this.commonName = commonName; }
 
-    public boolean isCa() { return ca; }
+    public String getCertificateType() { return certificateType; }
 
-    public void setCa(boolean ca) { this.ca = ca; }
+    public void setCertificateType(String certificateType) { this.certificateType = certificateType; }
 
     public Date getValidFrom() {
         return validFrom;

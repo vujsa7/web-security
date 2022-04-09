@@ -3,17 +3,14 @@ package com.security.certificate.controller;
 import com.security.certificate.dto.CertificateDto;
 import com.security.certificate.dto.ValidCertificateDto;
 import com.security.certificate.model.Certificate;
-import com.security.certificate.model.CertificateType;
+import com.security.certificate.model.CertificateTemplateType;
 import com.security.certificate.service.CertificateGeneratorService;
 import com.security.certificate.service.CertificateService;
 import com.security.data.model.IssuerData;
 import com.security.data.model.SubjectData;
 import com.security.data.service.DataService;
-import com.security.user.model.User;
 import com.security.user.service.RoleService;
 import com.security.user.service.UserService;
-import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -61,15 +57,15 @@ public class CertificateController {
 
     @PostMapping(value = "/rootCertificates")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<String> createRootCertificate(@RequestBody CertificateDto certificateDto){
-
+    public ResponseEntity<String> issueRootCertificate(@RequestBody CertificateDto certificateDto){
+        // TODO: Validate parameters coming from the request (for example isCa must be true)
         KeyPair keyPair = certificateGeneratorService.generateKeyPair();
         IssuerData issuerData = dataService.generateIssuerData(certificateDto, keyPair.getPrivate());
         SubjectData subjectData = dataService.generateSubjectData(certificateDto, keyPair.getPublic());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
                 certificateDto.getExtendedKeyUsage(), null);
-        certificateService.saveRootCertificate(certificate, keyPair.getPrivate(), certificateDto.getCa(), certificateDto.getEmail());
+        certificateService.saveRootCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail());
 
         return new ResponseEntity<>("Root certificate successfully created.", HttpStatus.CREATED);
     }
@@ -77,12 +73,11 @@ public class CertificateController {
     @PostMapping(value = "/certificates")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> createCertificate(Principal principal, @RequestBody CertificateDto certificateDto,
-                                                    @RequestParam(required = false) CertificateType certificateType){
-        // TODO: get issuer data by serial num of cert which is going to be used for signing (from keystore) and validate user
+                                                    @RequestParam(required = false) CertificateTemplateType certificateTemplateType){
         Certificate issuerCertificate = certificateService.getValidCertificateBySerialNumber(certificateDto.getSignWith());
         if(issuerCertificate == null)
             return new ResponseEntity<>("Sorry, certificate used for signing is not valid anymore or it does not exist in our records.", HttpStatus.BAD_REQUEST);
-        if(!issuerCertificate.getUser().getEmail().equals(principal.getName()) || !issuerCertificate.isCa())
+        if(!issuerCertificate.getUser().getEmail().equals(principal.getName()) || issuerCertificate.getCertificateType().equals("ee"))
             return new ResponseEntity<>("Unable to sign with the requested certificate.", HttpStatus.FORBIDDEN);
         if(!issuerCertificate.isInValidDateRange(certificateDto.getValidFrom(), certificateDto.getValidTo())){
             return new ResponseEntity<>("Unsuccessful. Invalid dates used for signing, please check the date ranges and try again.", HttpStatus.BAD_REQUEST);
@@ -95,14 +90,12 @@ public class CertificateController {
 
         KeyPair keyPair = certificateGeneratorService.generateKeyPair();
         SubjectData subjectData = dataService.generateSubjectData(certificateDto, keyPair.getPublic());
-        IssuerData issuerData = certificateService.getIssuerData(issuerCertificate.getAlias());
+        IssuerData issuerData = certificateService.getIssuerDataFromKeyStore(issuerCertificate.getAlias(), issuerCertificate.getCertificateType());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
                 certificateDto.getExtendedKeyUsage(), null);
 
-
-
-
+        certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() == true ? "ca" : "ee", issuerCertificate);
 
 //        IssuerData issuerData = generateIssuerData();
 //

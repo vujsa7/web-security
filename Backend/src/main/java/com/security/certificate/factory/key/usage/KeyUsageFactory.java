@@ -1,6 +1,6 @@
 package com.security.certificate.factory.key.usage;
 
-import com.security.certificate.model.CertificateType;
+import com.security.certificate.model.CertificateTemplateType;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ public class KeyUsageFactory {
         return new KeyUsage(bitwiseKeyUsage);
     }
 
-    public KeyUsage createInstance(CertificateType certificateType){
-        switch (certificateType){
+    public KeyUsage createInstance(CertificateTemplateType certificateTemplateType){
+        switch (certificateTemplateType){
             case template1:
                 return new KeyUsage(KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.dataEncipherment);
             case template2:

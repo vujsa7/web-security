@@ -1,6 +1,6 @@
 package com.security.certificate.factory.extended.key.usage;
 
-import com.security.certificate.model.CertificateType;
+import com.security.certificate.model.CertificateTemplateType;
 import com.security.certificate.model.KeyPurposeIdType;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
@@ -28,8 +28,8 @@ public class ExtendedKeyUsageFactory {
         return new ExtendedKeyUsage(new KeyPurposeId[] {});
     }
 
-    public ExtendedKeyUsage createInstance(CertificateType certificateType){
-        switch (certificateType){
+    public ExtendedKeyUsage createInstance(CertificateTemplateType certificateTemplateType){
+        switch (certificateTemplateType){
             case template1:
                 return new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth});
             case template2:

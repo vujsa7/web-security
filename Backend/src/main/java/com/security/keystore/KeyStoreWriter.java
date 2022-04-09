@@ -23,7 +23,7 @@ public class KeyStoreWriter {
             // Try to load existing keystore file
             keyStore.load(new FileInputStream(fileName), password);
         } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-            e.printStackTrace();
+            System.out.println("No keystore " + fileName + " found! Attempting to initialize new keystore.");
             try {
                 // Try to create new keystore file if there is no existing
                 keyStore.load(null, password);

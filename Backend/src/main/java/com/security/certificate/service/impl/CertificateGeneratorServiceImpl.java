@@ -2,7 +2,7 @@ package com.security.certificate.service.impl;
 
 import com.security.certificate.factory.extended.key.usage.ExtendedKeyUsageFactory;
 import com.security.certificate.factory.key.usage.KeyUsageFactory;
-import com.security.certificate.model.CertificateType;
+import com.security.certificate.model.CertificateTemplateType;
 import com.security.certificate.model.KeyPurposeIdType;
 import com.security.certificate.service.CertificateGeneratorService;
 import com.security.data.model.IssuerData;
@@ -36,7 +36,7 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
     }
 
     @Override
-    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateType certificateType) {
+    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateTemplateType certificateTemplateType) {
         try {
             // Creating builder for signing the certificate
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
@@ -57,9 +57,9 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
 
             certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(subjectData.getCa()));
             certGen.addExtension(Extension.keyUsage, false,
-                    certificateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateType));
+                    certificateTemplateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateTemplateType));
             certGen.addExtension(Extension.extendedKeyUsage, true,
-                    certificateType == null ? extendedKeyUsageFactory.createInstance(extendedKeyUsage) : extendedKeyUsageFactory.createInstance(certificateType));
+                    certificateTemplateType == null ? extendedKeyUsageFactory.createInstance(extendedKeyUsage) : extendedKeyUsageFactory.createInstance(certificateTemplateType));
 
             X509CertificateHolder certHolder = certGen.build(contentSigner);
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();

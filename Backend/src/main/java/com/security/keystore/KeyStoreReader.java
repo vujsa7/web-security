@@ -4,12 +4,11 @@ import com.security.data.model.IssuerData;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 public class KeyStoreReader {
@@ -56,6 +55,23 @@ public class KeyStoreReader {
         return null;
     }
 
+    /** Reads last certificate in the certificate chain, last being the latest issued certificate */
+    public X509Certificate readX509Certificate(String keyStoreFile, String keyStorePass, String alias) {
+        Certificate certificate = readCertificate(keyStoreFile, keyStorePass, alias);
+        if(certificate == null){
+            return null;
+        }
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            ByteArrayInputStream bais = new ByteArrayInputStream(certificate.getEncoded());
+            X509Certificate x509Certificate = (X509Certificate) cf.generateCertificate(bais);
+            return x509Certificate;
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public PrivateKey readPrivateKey(String keyStoreFile, String keyStorePass, String alias, String pass) {
         try {
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");
@@ -70,5 +86,17 @@ public class KeyStoreReader {
         }
 
         return null;
+    }
+
+    public boolean containsAlias(String keyStoreFile, String keyStorePass, String alias) {
+        try{
+            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            ks.load(in, keyStorePass.toCharArray());
+            return ks.containsAlias(alias);
+        } catch (KeyStoreException | NoSuchProviderException | CertificateException | IOException | NoSuchAlgorithmException e) {
+            System.out.println("No keystore found! We'll assume that alias doesn't exist.");
+            return false;
+        }
     }
 }
