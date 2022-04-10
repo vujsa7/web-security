@@ -53,7 +53,6 @@ public class CertificateServiceImpl implements CertificateService {
         // TODO: Validate signature + check if revoked
     }
 
-    //TODO: Maybe should be transactional
     @Override
     public X509Certificate saveRootCertificate(X509Certificate certificate, PrivateKey privateKey, String email) {
 
@@ -96,13 +95,11 @@ public class CertificateServiceImpl implements CertificateService {
         return keyStoreReader.readIssuerFromStore(keyStoreFile, alias, keyStorePass.toCharArray(), keyStorePass.toCharArray());
     }
 
-    // TODO: Maybe should be transactional
     @Override
     public X509Certificate saveCertificate(X509Certificate certificate, PrivateKey privateKey, String email, String certificateType, Certificate issuerCertificate) {
         // Getting subject keystore loading information
         String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(certificateType);
         String keyStorePass = keyStoreInfo.getKeyStorePass(certificateType);
-
 
         X509Certificate[] aboveCertificateChain = extractCertificateChain(issuerCertificate);
         X509Certificate[] subjectCertificate = { certificate };
@@ -128,32 +125,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     private X509Certificate[] extractCertificateChain(Certificate cert) {
-
-        // If this certificate is root, place it in the chain and return it
-        if(cert.getCertificateType().equals("root")){
-            String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(cert.getCertificateType());
-            String keyStorePass = keyStoreInfo.getKeyStorePass(cert.getCertificateType());
-            X509Certificate certFromKeyStore = keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, cert.getAlias());
-            X509Certificate[] certificateChain = { certFromKeyStore };
-            return certificateChain;
-        }
-
-        // Adding current certificate to the chain
         String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(cert.getCertificateType());
         String keyStorePass = keyStoreInfo.getKeyStorePass(cert.getCertificateType());
-        X509Certificate certFromKeyStore = keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, cert.getAlias());
 
-        List<X509Certificate> certificateList = new ArrayList<X509Certificate>();
-        certificateList.add(certFromKeyStore);
-
-        // Fetching current certificate issuer
-        String issuerAlias = cert.getIssuerAlias();
-        Certificate issuerCert = certificateRepository.findOneByAlias(issuerAlias);
-
-        // Passing issuer to the same function recursively and forming a static array from return value of recursive function
-        certificateList.addAll(Arrays.asList(extractCertificateChain(issuerCert)));
-
-        return certificateList.toArray(new X509Certificate[0]);
+        X509Certificate[] certificateChain = keyStoreReader.readCertificateChain(keyStoreFile, keyStorePass, cert.getAlias());
+        return certificateChain;
     }
 
     // TODO: Generate unique alias from db (not from keystore)

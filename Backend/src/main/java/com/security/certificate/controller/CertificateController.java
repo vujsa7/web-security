@@ -97,36 +97,6 @@ public class CertificateController {
 
         certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() == true ? "ca" : "ee", issuerCertificate);
 
-//        IssuerData issuerData = generateIssuerData();
-//
-//        // construct subject data
-//        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-//        builder.addRDN(BCStyle.CN, certificateDto.getCommonName());
-//        builder.addRDN(BCStyle.O, "AllSafe");
-//        builder.addRDN(BCStyle.C, certificateDto.getCountry());
-//        builder.addRDN(BCStyle.ST, certificateDto.getState());
-//        builder.addRDN(BCStyle.L, certificateDto.getLocal());
-//        SubjectData subjectData = new SubjectData(builder.build(), new BigInteger(8 * 40, secureRandom).toString(),
-//                certificateDto.getValidFrom(), certificateDto.getValidTo(), certificateDto.getCa());
-//
-//        // generate cert
-//        certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(), certificateDto.getExtendedKeyUsage(), certificateType);
-//
-//        // create acc || find existing acc => user
-//        // TODO: replace "getAliasHere" with subjects alias
-//        User user = userService.findByEmail(certificateDto.getEmail());
-//        if(user == null){
-//            user = new User(certificateDto.getEmail(), passwordEncoder.encode("allsafe"), roleService.findByName("ROLE_USER"));
-//            Certificate certificate = new Certificate(subjectData.getSerialNumber(), "getAliasHere", subjectData.getStartDate(), subjectData.getEndDate(), user);
-//            userService.save(user, certificate);
-//
-//            return new ResponseEntity<>("Certificate generated", HttpStatus.CREATED);
-//        }
-//
-//        // save (serialNum, alias, validFrom, validTo, user) to db
-//        Certificate certificate = new Certificate(subjectData.getSerialNumber(), "getAliasHere", subjectData.getStartDate(), subjectData.getEndDate(), user);
-//        certificateService.save(certificate);
-
         return new ResponseEntity<>(principal.getName(), HttpStatus.CREATED);
     }
 

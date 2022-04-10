@@ -75,6 +75,33 @@ public class KeyStoreReader {
         return null;
     }
 
+    public X509Certificate[] readCertificateChain(String keyStoreFile, String keyStorePass, String alias) {
+        KeyStore ks = null;
+        try {
+            ks = KeyStore.getInstance("JKS", "SUN");
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            ks.load(in, keyStorePass.toCharArray());
+
+            if(ks.isKeyEntry(alias)) {
+                Certificate[] chain = ks.getCertificateChain(alias);
+                List<X509Certificate> listX509 = new ArrayList<X509Certificate>();
+                for(int i = 0; i < chain.length; i++){
+                    Certificate certificate = chain[i];
+                    CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                    ByteArrayInputStream bais = new ByteArrayInputStream(certificate.getEncoded());
+                    X509Certificate x509Certificate = (X509Certificate) cf.generateCertificate(bais);
+                    listX509.add(x509Certificate);
+                }
+                X509Certificate[] x509array = new X509Certificate[listX509.size()];
+                return listX509.toArray(x509array);
+            }
+        } catch (KeyStoreException | NoSuchProviderException | CertificateException | IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public PrivateKey readPrivateKey(String keyStoreFile, String keyStorePass, String alias, String pass) {
         try {
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");

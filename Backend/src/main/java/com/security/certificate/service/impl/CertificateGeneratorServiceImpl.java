@@ -43,8 +43,8 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
             builder = builder.setProvider("BC");
             ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
 
-            KeyPair subjectKeyPair = generateKeyPair();
-            subjectData.setPublicKey(subjectKeyPair.getPublic());
+//            KeyPair subjectKeyPair = generateKeyPair();
+//            subjectData.setPublicKey(subjectKeyPair.getPublic());
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
                     issuerData.getX500name(),

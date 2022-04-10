@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 public class KeyStoreWriter {
     private KeyStore keyStore;
@@ -41,7 +41,7 @@ public class KeyStoreWriter {
         }
     }
 
-    public void write(String alias, PrivateKey privateKey, char[] password, Certificate[] certificateChain){
+    public void write(String alias, PrivateKey privateKey, char[] password, X509Certificate[] certificateChain){
         try{
             keyStore.setKeyEntry(alias, privateKey, password, certificateChain);
         } catch (KeyStoreException e){
