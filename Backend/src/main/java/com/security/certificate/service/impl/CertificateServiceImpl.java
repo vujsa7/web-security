@@ -1,6 +1,7 @@
 package com.security.certificate.service.impl;
 
 import com.security.certificate.dao.CertificateRepository;
+import com.security.certificate.dto.CertificateDto;
 import com.security.certificate.model.Certificate;
 import com.security.certificate.service.CertificateService;
 import com.security.data.model.IssuerData;
@@ -14,6 +15,7 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.oer.its.CertificateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -168,6 +170,31 @@ public class CertificateServiceImpl implements CertificateService {
         X500Name x500name = new X500Name( principal.getName() );
         RDN cn = x500name.getRDNs(BCStyle.CN)[0];
         return IETFUtils.valueToString(cn.getFirst().getValue());
+    }
+
+    public List<CertificateDto> getCertificates(){
+        KeyStoreReader reader=new KeyStoreReader();
+        List<CertificateDto> certificateDtos=new ArrayList<CertificateDto>();
+        List<X509Certificate> rootCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("root"),keyStoreInfo.getKeyStorePass("root"));
+        List<X509Certificate> caCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("ca"),keyStoreInfo.getKeyStorePass("ca"));
+        List<X509Certificate> endCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("end"),keyStoreInfo.getKeyStorePass("end"));
+        for(X509Certificate rootCertificate:rootCertificates){
+            certificateDtos.add(ConvertX509ToCertificateDto(rootCertificate));
+        }
+        for(X509Certificate caCertificate:caCertificates){
+            certificateDtos.add(ConvertX509ToCertificateDto(caCertificate));
+        }
+        for(X509Certificate endCertificate:endCertificates){
+            certificateDtos.add(ConvertX509ToCertificateDto(endCertificate));
+        }
+        return certificateDtos;
+
+    }
+
+    private CertificateDto ConvertX509ToCertificateDto(X509Certificate certificate){
+        //TODO do conversion
+        return null;
+
     }
 
 

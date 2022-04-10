@@ -10,6 +10,9 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class KeyStoreReader {
     private KeyStore keyStore;
@@ -98,5 +101,33 @@ public class KeyStoreReader {
             System.out.println("No keystore found! We'll assume that alias doesn't exist.");
             return false;
         }
+    }
+
+    public List<X509Certificate> getCertificatesInKeyStore(String keyStoreFile,String keyStorePass){
+        List<X509Certificate> certificates=new ArrayList<>();
+        try {
+            KeyStore ks = KeyStore.getInstance("JKS", "SUN");
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
+            ks.load(in, keyStorePass.toCharArray());
+            List<String> aliases= Collections.list(ks.aliases());
+            for(String alias:aliases){
+                certificates.add((X509Certificate)ks.getCertificate(alias));
+            }
+
+            return certificates;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
