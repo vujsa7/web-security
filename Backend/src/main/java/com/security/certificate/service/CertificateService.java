@@ -8,6 +8,8 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface CertificateService {
+    List<Certificate> getAllCertificates();
+
     List<Certificate> getValidCertificatesByUsersEmail(String email);
 
     /** Method that saves a root certificate, it's private key to a keystore and assigns root certificate to a user in the database,
@@ -17,6 +19,8 @@ public interface CertificateService {
 
     /** Method that fetches certificate from the database based on serial number */
     Certificate getCertificateBySerialNumber(String serialNumber);
+
+    Certificate getCertificateByAlias(String alias);
 
     /** Method that fetches valid certificate from the database based on serial number */
     Certificate getValidCertificateBySerialNumber(String serialNumber);

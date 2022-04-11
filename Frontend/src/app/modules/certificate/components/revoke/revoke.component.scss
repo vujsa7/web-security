@@ -1,0 +1,23 @@
+@import 'src/styles/main.scss';
+
+.certificate-wrapper{
+    width: 100vw;
+    padding: 0 $grid-margin-width;
+}
+
+    .full-name{
+        font-weight: bold;
+        color: darkgrey;
+        font-size: 16px;
+    }
+
+    .logout{
+        color: darkgrey;
+        font-size: 16px;
+    }
+
+    .title{
+        font-weight: bold;
+        color: #006494;
+        font-size: 25px;
+    }

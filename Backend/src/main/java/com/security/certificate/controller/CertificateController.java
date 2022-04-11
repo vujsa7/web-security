@@ -1,6 +1,7 @@
 package com.security.certificate.controller;
 
 import com.security.certificate.dto.CertificateDto;
+import com.security.certificate.dto.UserCertificateDto;
 import com.security.certificate.dto.ValidCertificateDto;
 import com.security.certificate.model.Certificate;
 import com.security.certificate.model.CertificateTemplateType;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.*;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,19 @@ public class CertificateController {
         this.dataService = dataService;
         this.passwordEncoder = passwordEncoder;
         this.secureRandom = new SecureRandom();
+    }
+
+    @GetMapping(value = "/certificates")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public List<UserCertificateDto> getAllCertificates(){
+        List<UserCertificateDto> userCertificates = new ArrayList<>();
+        List<Certificate> certificates = certificateService.getAllCertificates();
+        for (Certificate cert : certificates){
+            Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
+            String issuerName = issuerCert.getCommonName();
+            userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo()));
+        }
+        return userCertificates;
     }
 
     @GetMapping(value = "/validCertificates/{username}")

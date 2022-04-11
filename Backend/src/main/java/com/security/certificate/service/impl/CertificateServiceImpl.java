@@ -48,6 +48,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public List<Certificate> getAllCertificates() {
+        return certificateRepository.findAll();
+    }
+
+    @Override
     public List<Certificate> getValidCertificatesByUsersEmail(String email) {
         return certificateRepository.findValidCertificates(email);
         // TODO: Validate signature + check if revoked
@@ -67,7 +72,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         User user = userService.fetchOrCreateDefaultUser(email);
         Certificate cert = new Certificate(certificate.getSerialNumber().toString(), getCommonNameFromCertificate(certificate), "root",
-                alias, null, certificate.getNotBefore(), certificate.getNotAfter(), user);
+                alias, alias, certificate.getNotBefore(), certificate.getNotAfter(), user);
         userService.save(user, cert);
         return certificate;
     }
@@ -75,6 +80,11 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public Certificate getCertificateBySerialNumber(String serialNumber) {
         return certificateRepository.findOneBySerialNumber(serialNumber);
+    }
+
+    @Override
+    public Certificate getCertificateByAlias(String alias) {
+        return certificateRepository.findOneByAlias(alias);
     }
 
     @Override

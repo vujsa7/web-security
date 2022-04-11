@@ -1,15 +1,15 @@
 <div class="d-flex flex-row wrapper">
     <div class="d-flex flex-column mx-4 my-3">
         <span class="blue-text">Subject</span>
-        <span class="darkgray-text mb-2">www.somelongurlthatcanbereallylong.com</span>
+        <span class="darkgray-text mb-2">{{certificate.subjectName}}</span>
         <span class="blue-text">Valid from</span>
-        <span class="darkgray-text">Sunday, Januar 16, 2020</span>
+        <span class="darkgray-text">{{certificate.validFrom | date: 'fullDate'}}</span>
     </div>
     <div class="d-flex flex-column mx-5 my-3">
         <span class="blue-text">Issuer</span>
-        <span class="darkgray-text mb-2">Cloudfare Inc ECC</span>
+        <span class="darkgray-text mb-2">{{certificate.issuerName}}</span>
         <span class="blue-text">Valid to</span>
-        <span class="darkgray-text">Sunday, Januar 17, 2025</span>
+        <span class="darkgray-text">{{certificate.validTo | date: 'fullDate'}}</span>
     </div>
     <div class="d-flex flex-row button-wrapper me-4 my-3">
         <app-primary-button [text]="'Full Info'" class="mx-2"></app-primary-button>    
