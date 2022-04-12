@@ -60,6 +60,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public List<Certificate> getIssuingCertificatesByUsersEmail(String email) {
+        return certificateRepository.findIssuingCertificates(email);
+    }
+
+    @Override
     public X509Certificate saveRootCertificate(X509Certificate certificate, PrivateKey privateKey, String email) {
 
         String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation("root");

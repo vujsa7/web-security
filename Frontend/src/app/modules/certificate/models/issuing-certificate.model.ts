@@ -1,5 +1,5 @@
 /** Certificate model class used to sign other certificates */ 
-export class SigningCertificate{
+export class IssuingCertificate{
     serialNumber: string = "";
     commonName: string = "";
     validFrom: Date = new Date();

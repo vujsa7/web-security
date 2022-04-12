@@ -2,8 +2,11 @@
 
 .navbar{
     padding: 20px $grid-margin-width 20px;
-    justify-content: flex-end !important;
 }
+    
+    span{
+        color: color(darkgrey);
+    }
 
     .nav-item{
         display: inline-block;
@@ -14,4 +17,8 @@
     .active{
         font-weight: bold;
         color: color(blue) !important;
+    }
+
+    .hidden{
+        display: none;
     }

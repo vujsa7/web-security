@@ -1,100 +1,121 @@
 <div class="issue-wrapper">
-    <h3>Issue a certificate</h3>
-    <hr>
-    <div class="d-flex flex-wrapper">
-        <div class="template-wrapper d-flex flex-column">
-            <div class="radio-button-wrapper">
-                <label>
-                    <input type="radio" class="radio-button" name="sort" />
-                    Template 1
-                </label>
-            </div>
-            <div class="radio-button-wrapper">
-                <label>
-                    <input type="radio" class="radio-button" name="sort" />
-                    Template 2
-                </label>
-            </div>
-            <div class="radio-button-wrapper">
-                <label>
-                    <input type="radio" class="radio-button" name="sort" />
-                    Template 3
-                </label>
-            </div>
-        </div>
-        <div class="d-flex flex-column issue-form-wrapper" *ngIf="issueCertificateForm">
-            <form [formGroup]="issueCertificateForm" (ngSubmit)="onSubmit()">
-                <div class="d-flex w-100">
-                    <div class="form-part">
-                        <h4>Subject info</h4>
-                        <div class="input-container w-100">
-                            <label for="acc-email" class="input-label">Account email</label>
-                            <input id="acc-email" type="text" name="acc-email" formControlName="email">
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="common-name" class="input-label">Common name</label>
-                            <input id="common-name" type="text" name="common-name" formControlName="commonName">
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="country" class="input-label">Country</label>
-                            <input id="country" type="text" name="country" formControlName="country">
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="state" class="input-label">State</label>
-                            <input id="state" type="text" name="state" formControlName="state">
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="city" class="input-label">City</label>
-                            <input id="city" type="text" name="city" formControlName="local">
-                        </div>
-                    </div>
-                    <div class="form-part">
-                        <h4>Validity period</h4>
-                        <div class="input-container w-100">
-                            <label for="cert" class="input-label">Certificate to sign with</label>
-                            <select id="cert" name='cert' formControlName="signWith" (change)="signWithChanged()">
-                                <option *ngFor="let signingCertificate of signingCertificates" [ngValue]="signingCertificate">{{signingCertificate.commonName}}</option>
-                            </select>
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="valid-from" class="input-label">Valid from</label>
-                            <input id="valid-from" type="button" name="valid-from" ngbDatepicker #d1="ngbDatepicker"
-                             formControlName="validFrom" (click)="d1.toggle()" (dateSelect)="validFromChanged()" [minDate]="validFromMin" [maxDate]="validFromMax">
-                        </div>
-                        <div class="input-container w-100">
-                            <label for="valid-to" class="input-label">Valid to</label>
-                            <input id="valid-to" type="button" name="valid-to" ngbDatepicker #d2="ngbDatepicker"
-                             formControlName="validTo" (click)="d2.toggle()" (dateSelect)="validToChanged()" [minDate]="validToMin" [maxDate]="validToMax">
-                        </div>
-                    </div>
-                    <div class="form-part">
-                        <h4>Basic constraint</h4>
-                        <div class="input-container w-100">
-                            <label for="subject-type" class="input-label">Subject Type</label>
-                            <select id="subject-type" name='subject-type' formControlName="subjectType" (change)="subjectTypeChanged()">
-                                <option *ngFor="let subjectType of subjectTypes">{{subjectType}}</option>
-                            </select>
-                        </div>
-                    </div>
+    <div *ngIf="isLoading" class="d-flex align-items-center justify-content-center" style="position: relative; height: calc(100vh - 80px)">
+        <ngx-spinner bdColor="rgb(255,255,255)" size="medium" color="#006494" type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
+    </div>
+    <div class="no-certificates-wrapper" *ngIf="!hasIssuingCertificates() && !isLoading">
+        <img class="robot-illustration" src="assets/images/8.png" alt="No certificates">
+        <div class="grey-block"></div>
+        <span class="large-text">Oops...</span>
+        <span class="subtext">You can't issue any certificates. Only certificate authorities can do that.</span>
+        <span class="subtext link" routerLink="/certificates/dashboard">Dashboard</span>
+    </div>
+    <div *ngIf="hasIssuingCertificates() && !isLoading">
+        <h3>Issue a certificate</h3>
+        <hr>
+        <div class="d-flex flex-wrapper">
+            <div class="template-wrapper d-flex flex-column">
+                <div class="radio-button-wrapper">
+                    <label>
+                        <input type="radio" class="radio-button" name="sort" />
+                        Template 1
+                    </label>
                 </div>
-                <h4>Key usages</h4>
-                <div class="key-usage-grid">
-                    <div class="d-flex align-items-center" *ngFor="let keyUsage of keyUsages">
-                        <label><input class="checkbox" type="checkbox" formArrayName="keyUsages" (value)="keyUsage.keyUsageValue" (change)="keyUsageChanged($event, keyUsage.keyUsageValue)"/>
-                            <span class="checkbox-label">{{keyUsage.keyUsageName | keyUsage}}</span>
-                        </label>
-                    </div>
+                <div class="radio-button-wrapper">
+                    <label>
+                        <input type="radio" class="radio-button" name="sort" />
+                        Template 2
+                    </label>
                 </div>
-                <h4>Extended key usages</h4>
-                <div class="extended-key-usage-grid">
-                    <div class="d-flex align-items-center" *ngFor="let extendedKeyUsage of extendedKeyUsages">
-                        <label><input class="checkbox" type="checkbox" formArrayName="extendedKeyUsages" (value)="extendedKeyUsage" (change)="extendedKeyUsageChanged($event, extendedKeyUsage)"/>
-                            <span class="checkbox-label">{{extendedKeyUsage | extendedKeyUsage}}</span>
-                        </label>
-                    </div>
+                <div class="radio-button-wrapper">
+                    <label>
+                        <input type="radio" class="radio-button" name="sort" />
+                        Template 3
+                    </label>
                 </div>
-                <app-primary-button [text]="'Create'" [disabled]="!issueCertificateForm.valid" class="create-btn" (click)="onSubmit()"></app-primary-button>
-            </form>
+            </div>
+            <div class="d-flex flex-column issue-form-wrapper" *ngIf="issueCertificateForm">
+                <form [formGroup]="issueCertificateForm" (ngSubmit)="onSubmit()">
+                    <div class="d-flex w-100">
+                        <div class="form-part">
+                            <h4>Subject info</h4>
+                            <div class="input-container w-100">
+                                <label for="acc-email" class="input-label">Account email</label>
+                                <input id="acc-email" type="text" name="acc-email" formControlName="email">
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="common-name" class="input-label">Common name</label>
+                                <input id="common-name" type="text" name="common-name" formControlName="commonName">
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="country" class="input-label">Country</label>
+                                <input id="country" type="text" name="country" formControlName="country">
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="state" class="input-label">State</label>
+                                <input id="state" type="text" name="state" formControlName="state">
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="city" class="input-label">City</label>
+                                <input id="city" type="text" name="city" formControlName="local">
+                            </div>
+                        </div>
+                        <div class="form-part">
+                            <h4>Validity period</h4>
+                            <div class="input-container w-100">
+                                <label for="cert" class="input-label">Certificate to sign with</label>
+                                <select id="cert" name='cert' formControlName="signWith" (change)="signWithChanged()">
+                                    <option *ngFor="let issuingCertificate of issuingCertificates"
+                                        [ngValue]="issuingCertificate">{{issuingCertificate.commonName}}</option>
+                                </select>
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="valid-from" class="input-label">Valid from</label>
+                                <input id="valid-from" type="button" name="valid-from" ngbDatepicker #d1="ngbDatepicker"
+                                    formControlName="validFrom" (click)="d1.toggle()" (dateSelect)="validFromChanged()"
+                                    [minDate]="validFromMin" [maxDate]="validFromMax">
+                            </div>
+                            <div class="input-container w-100">
+                                <label for="valid-to" class="input-label">Valid to</label>
+                                <input id="valid-to" type="button" name="valid-to" ngbDatepicker #d2="ngbDatepicker"
+                                    formControlName="validTo" (click)="d2.toggle()" (dateSelect)="validToChanged()"
+                                    [minDate]="validToMin" [maxDate]="validToMax">
+                            </div>
+                        </div>
+                        <div class="form-part">
+                            <h4>Basic constraint</h4>
+                            <div class="input-container w-100">
+                                <label for="subject-type" class="input-label">Subject Type</label>
+                                <select id="subject-type" name='subject-type' formControlName="subjectType"
+                                    (change)="subjectTypeChanged()">
+                                    <option *ngFor="let subjectType of subjectTypes">{{subjectType}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h4>Key usages</h4>
+                    <div class="key-usage-grid">
+                        <div class="d-flex align-items-center" *ngFor="let keyUsage of keyUsages">
+                            <label><input class="checkbox" type="checkbox" formArrayName="keyUsages"
+                                    (value)="keyUsage.keyUsageValue"
+                                    (change)="keyUsageChanged($event, keyUsage.keyUsageValue)" />
+                                <span class="checkbox-label">{{keyUsage.keyUsageName | keyUsage}}</span>
+                            </label>
+                        </div>
+                    </div>
+                    <h4>Extended key usages</h4>
+                    <div class="extended-key-usage-grid">
+                        <div class="d-flex align-items-center" *ngFor="let extendedKeyUsage of extendedKeyUsages">
+                            <label><input class="checkbox" type="checkbox" formArrayName="extendedKeyUsages"
+                                    (value)="extendedKeyUsage"
+                                    (change)="extendedKeyUsageChanged($event, extendedKeyUsage)" />
+                                <span class="checkbox-label">{{extendedKeyUsage | extendedKeyUsage}}</span>
+                            </label>
+                        </div>
+                    </div>
+                    <app-primary-button [text]="'Create'" [disabled]="!issueCertificateForm.valid" class="create-btn"
+                        (click)="onSubmit()"></app-primary-button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

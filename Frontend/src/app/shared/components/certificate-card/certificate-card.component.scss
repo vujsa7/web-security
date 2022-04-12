@@ -3,6 +3,14 @@
 .wrapper{
     border: 1px solid #F2F2F2;
 }
+    
+    .column-1{
+        width: 20%;
+    }
+
+    .column-2{
+        width: 30%;
+    }
 
     .darkgray-text{
         font-size: 16px;
@@ -16,5 +24,30 @@
     }
 
     .button-wrapper{
-        margin-left: auto;
+        justify-content: flex-end;
+        width: 50%;
     }
+
+        .download-btn{
+            height: 54px;
+            width: 54px;
+            border: none;
+            border-radius: 0 !important;
+            box-shadow: none;
+            background-color: #171717;
+            transition: 0.3s all ease-in-out;
+
+            &:active{
+                box-shadow: none !important;
+                color: color(darkgrey);
+            }
+
+            &:hover{
+                filter: opacity(80%);
+            }
+        }
+
+            .download-icon{
+                @include icon;
+                @include background-svg($download-icon);
+            }

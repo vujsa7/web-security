@@ -10,6 +10,7 @@ export class PrimaryButtonComponent {
   constructor() { }
 
   @Input() text: string = "Button";
+  @Input() color: string = "#006494";
   @Input() disabled: boolean = false;
 
 }

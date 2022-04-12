@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import jwt_decode from 'jwt-decode';
 
@@ -10,6 +10,8 @@ import jwt_decode from 'jwt-decode';
 export class AuthService {
 
     private baseUrl: string = environment.baseUrl;
+    private userEmail = new BehaviorSubject('');
+    userEmailObservable = this.userEmail.asObservable();
 
     constructor(private http: HttpClient) { }
 
@@ -23,6 +25,7 @@ export class AuthService {
 
     setToken(data: string): void {
         localStorage.setItem('jwtToken', data);
+        this.userEmail.next(this.getTokenUsername());
     }
 
     flushToken(): void{
@@ -73,6 +76,11 @@ export class AuthService {
         }
     }
 
+    getToken(): any {
+        var token = localStorage.getItem('jwtToken');
+        return token;
+    }
+
     private getDecodedAccessToken(token: string): any {
         try {
             return jwt_decode(token);
@@ -80,10 +88,4 @@ export class AuthService {
             return null;
         }
     }
-
-    public getToken(): any {
-        var token = localStorage.getItem('jwtToken');
-        return token;
-    }
-
 }

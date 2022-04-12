@@ -1,5 +1,51 @@
 @import 'src/styles/main.scss';
 
+.no-certificates-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+
+    .grey-block{
+        background-color: #cecece;
+        position: absolute;
+        z-index: -1;
+        margin-left: -$grid-margin-width;
+        width: 100%;
+        height: 400px;
+    }
+
+    .robot-illustration{
+        position: absolute;
+        top: 124px;
+        right: 0;
+        width: 820px;
+        object-fit: contain;
+    }
+
+    .large-text{
+        display: inline-block;
+        margin-top: 140px;
+        margin-left: 40px;
+        color: white;
+        font-weight: bold;
+        font-size: 200px;
+    }
+
+    .subtext{
+        color: color(black);
+        display: inline-block;
+        font-size: $h4-size;
+        margin-left: 50px;
+    }
+
+    .link{
+        cursor: pointer;
+        font-weight: bold;
+        color: color(blue);
+        text-decoration: underline;
+        margin-top: 10px;
+    }
+
 .issue-wrapper{
     padding: 0 $grid-margin-width;
 }

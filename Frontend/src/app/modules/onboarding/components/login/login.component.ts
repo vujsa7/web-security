@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
       this.authService.login(this.loginForm.value).subscribe(
         data => {
           this.authService.setToken(data.accessToken);
-          console.log(data.accessToken);
           this.router.navigate(['/certificates']);
         },
         error => {

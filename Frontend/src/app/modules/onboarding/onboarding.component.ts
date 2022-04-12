@@ -17,14 +17,12 @@ export class OnboardingComponent implements OnInit {
 
     setTimeout(() => {
       if(this.authService.hasValidToken()){
-        console.log("Session token has expired. Flushing...")
         this.router.navigate(['certificates']);
       } else {
         this.router.navigate(['onboarding/login']);
       }
-
       this.spinner.hide();
-    }, 1000);
+    }, 500);
     
   }
 

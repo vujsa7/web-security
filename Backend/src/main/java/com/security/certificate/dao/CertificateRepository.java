@@ -13,6 +13,9 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query("select c from Certificate c where c.serialNumber = :serialNumber and c.validFrom <= current_timestamp and c.validTo >= current_timestamp")
     Certificate findValidCertificateBySerialNumber(String serialNumber);
 
+    @Query("select c from Certificate c left outer join User u on c.user.id = u.id where c.user.email = :email and c.validFrom <= current_timestamp and c.validTo >= current_timestamp and c.certificateType != 'ee'")
+    List<Certificate> findIssuingCertificates(String email);
+
     Certificate findOneBySerialNumber(String serialNumber);
 
     Certificate findOneByAlias(String alias);

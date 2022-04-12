@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { KeyUsageService } from '../../services/key-usage.service';
 import { KeyUsage } from '../../models/key-usage.model';
 import { CertificateService } from '../../services/certificate.service';
-import { SigningCertificate } from '../../models/signing-certificate.model';
+import { IssuingCertificate } from '../../models/issuing-certificate.model';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/core/authentication/auth.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-issue',
@@ -20,7 +21,7 @@ export class IssueComponent implements OnInit {
   keyUsages: Array<KeyUsage> = new Array();
   extendedKeyUsages: Array<string> = new Array();
 
-  signingCertificates: SigningCertificate[] = new Array();
+  issuingCertificates: IssuingCertificate[] = new Array();
 
   validFromMin!: NgbDateStruct;
   validFromMax!: NgbDateStruct;
@@ -28,27 +29,32 @@ export class IssueComponent implements OnInit {
   validToMax!: NgbDateStruct;
 
   isCreatingSelfSignedSignature: boolean = false;
+  isLoading: boolean = false;
 
-  constructor(private keyUsageService: KeyUsageService, private certificateService: CertificateService, private authService: AuthService) {
+  constructor(private spinner: NgxSpinnerService, private keyUsageService: KeyUsageService, private certificateService: CertificateService, private authService: AuthService) {
     this.initializeSubjectTypes();
   }
 
   ngOnInit(): void {
 
+    this.isLoading = true;
+    this.spinner.show();
     forkJoin({
       // Fetching key usages from backend
       keyUsages: this.keyUsageService.getKeyUsages(),
       // Fetching extended key usages from backend
       extendedKeyUsages: this.keyUsageService.getExtendedKeyUsages(),
       // Fetching certificates that can be used for signing
-      signingCertificates: this.certificateService.getValidCertificatesForSigning()
+      signingCertificates: this.certificateService.getIssuingCertificates()
     })
       .subscribe(
         data => {
           this.keyUsages = data.keyUsages;
           this.extendedKeyUsages = data.extendedKeyUsages;
-          this.signingCertificates = data.signingCertificates;
+          this.issuingCertificates = data.signingCertificates;
           this.initilizeIssueCertificateForm();
+          this.isLoading = false;
+          this.spinner.hide();
         }
       );
   }
@@ -142,6 +148,13 @@ export class IssueComponent implements OnInit {
         console.log(issueCertificateRequest);
       }
     }
+  }
+
+  hasIssuingCertificates(): boolean{
+    if(this.issuingCertificates.length > 0){
+      return true;
+    }
+    return false;
   }
 
   private initializeSubjectTypes(): void {

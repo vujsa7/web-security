@@ -16,10 +16,11 @@ import { SharedModule } from './shared/shared.module';
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
+    CoreModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],
-  providers: [CoreModule],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

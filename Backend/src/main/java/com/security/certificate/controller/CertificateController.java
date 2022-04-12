@@ -65,10 +65,31 @@ public class CertificateController {
         return userCertificates;
     }
 
+    @GetMapping(value = "/certificates/user")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<UserCertificateDto> getCertificates(Principal principal){
+        List<UserCertificateDto> userCertificates = new ArrayList<>();
+        List<Certificate> certificates = certificateService.getValidCertificatesByUsersEmail(principal.getName());
+        for (Certificate cert : certificates){
+            Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
+            String issuerName = issuerCert.getCommonName();
+            userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked()));
+        }
+        return userCertificates;
+    }
+
     @GetMapping(value = "/validCertificates/{username}")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<ValidCertificateDto> getValidCertificates(@PathVariable() String username){
         return certificateService.getValidCertificatesByUsersEmail(username).stream()
+                .map(cert -> new ValidCertificateDto(cert.getSerialNumber(), cert.getCommonName(), cert.getValidFrom(), cert.getValidTo()))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/issuingCertificates/{username}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<ValidCertificateDto> getIssuingCertificates(@PathVariable() String username){
+        return certificateService.getIssuingCertificatesByUsersEmail(username).stream()
                 .map(cert -> new ValidCertificateDto(cert.getSerialNumber(), cert.getCommonName(), cert.getValidFrom(), cert.getValidTo()))
                 .collect(Collectors.toList());
     }

@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { AuthService } from './authentication/auth.service';
+import { AuthenticationGuard } from './guards/authentication.guard';
 import { throwIfAlreadyLoaded } from './guards/import.guard';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
   ],
   providers: [
-    AuthService
+    AuthService,
+    AuthenticationGuard
   ]
 })
 export class CoreModule {

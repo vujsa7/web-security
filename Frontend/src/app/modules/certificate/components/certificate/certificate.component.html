@@ -1,4 +1,25 @@
 <div class="d-flex flex-column certificate-wrapper">
-    <span class="title mb-3">List of my certificates</span>
+    <div *ngIf="isLoading" class="d-flex align-items-center justify-content-center" style="position: relative; height: calc(100vh - 80px)">
+        <ngx-spinner bdColor="rgb(255,255,255)" size="medium" color="#006494" type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
+    </div>
+    <div class="no-certificates-wrapper" *ngIf="!hasCertificates() && !isLoading">
+        <img class="robot-illustration" src="assets/images/31.png" alt="No certificates">
+        <div class="grey-block"></div>
+        <span class="large-text">Hello</span>
+        <span class="subtext">You don't have any certificates at the moment. Contact our team to get one.</span>
+        <div>
+            <a class="subtext link" href="https://www.linkedin.com/in/aleksavujisic/" target="_blank">Melanija</a>
+        </div>
+        <div>
+            <a class="subtext link" href="https://www.linkedin.com/in/srdjan-dragovic/" target="_blank">Aleksa</a>
+        </div>
+        <div>
+            <a class="subtext link" href="https://www.facebook.com/melanija.racic" target="_blank">Srdjan</a>
+        </div>
+    </div>
+    <div *ngIf="hasCertificates() && !isLoading" class="d-flex flex-column">
+        <span class="title mb-3">List of my certificates</span>
+        <app-certificate-card *ngFor="let certificate of certificates" class="mb-3" [certificate]="certificate" [mode]="'user'"></app-certificate-card>
+    </div>
 </div>
 
