@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/authentication/auth.service';
@@ -20,5 +20,9 @@ export class CertificateService {
 
   getValidCertificatesForSigning(): Observable<SigningCertificate[]>{
     return this.http.get<SigningCertificate[]>(this.baseUrl + "validCertificates/" + this.authService.getTokenUsername(), { headers: this.authService.getHeader() });
+  }
+
+  revokeCertificate(serialNumber: string): Observable<any>{
+    return this.http.put<any>(this.baseUrl + "revoke/" + serialNumber, null, { headers: this.authService.getHeader() });
   }
 }

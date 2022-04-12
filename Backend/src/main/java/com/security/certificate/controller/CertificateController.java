@@ -12,8 +12,10 @@ import com.security.data.model.SubjectData;
 import com.security.data.service.DataService;
 import com.security.user.service.RoleService;
 import com.security.user.service.UserService;
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +59,7 @@ public class CertificateController {
         for (Certificate cert : certificates){
             Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
             String issuerName = issuerCert.getCommonName();
-            userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo()));
+            userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked()));
         }
         return userCertificates;
     }
@@ -113,6 +115,13 @@ public class CertificateController {
         certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() == true ? "ca" : "ee", issuerCertificate);
 
         return new ResponseEntity<>(principal.getName(), HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/revoke/{serialNumber}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> revokeCertificate(@PathVariable() String serialNumber){
+        certificateService.revokeCertificate(serialNumber);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

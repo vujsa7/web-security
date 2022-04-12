@@ -32,6 +32,9 @@ public class Certificate {
     @Column(nullable = false)
     private Date validTo;
 
+    @Column(nullable = false)
+    private Boolean isRevoked;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_id")
     private User user;
@@ -48,6 +51,7 @@ public class Certificate {
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.user = user;
+        this.isRevoked = false;
     }
 
     public Long getId() {
@@ -112,6 +116,14 @@ public class Certificate {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Boolean getRevoked() {
+        return isRevoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        isRevoked = revoked;
     }
 
     public boolean isInValidDateRange(Date validFrom, Date validTo){

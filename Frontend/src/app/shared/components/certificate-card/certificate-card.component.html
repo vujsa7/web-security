@@ -14,7 +14,7 @@
     <div class="d-flex flex-row button-wrapper me-4 my-3">
         <app-primary-button [text]="'Full Info'" class="mx-2"></app-primary-button>    
         <app-primary-button *ngIf="mode=='user'" [text]="'Is Revoked?'" class="mx-2"></app-primary-button>
-        <app-primary-button *ngIf="mode=='admin'" [text]="'Revoke'" class="mx-2"></app-primary-button>
+        <app-primary-button *ngIf="mode=='admin'" [text]="'Revoke'" class="mx-2" (click)="revokeCertificate()"></app-primary-button>
         <app-primary-button [text]="'Download'" class="mx-2"></app-primary-button>
     </div>
 </div>

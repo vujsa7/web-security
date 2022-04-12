@@ -8,13 +8,15 @@ public class UserCertificateDto {
     private String issuerName;
     private Date validFrom;
     private Date validTo;
+    private Boolean isRevoked;
 
-    public UserCertificateDto(String serialNumber, String subjectName, String issuerName, Date validFrom, Date validTo) {
+    public UserCertificateDto(String serialNumber, String subjectName, String issuerName, Date validFrom, Date validTo, Boolean isRevoked) {
         this.serialNumber = serialNumber;
         this.subjectName = subjectName;
         this.issuerName = issuerName;
         this.validFrom = validFrom;
         this.validTo = validTo;
+        this.isRevoked = isRevoked;
     }
 
     public String getSerialNumber() {
@@ -55,5 +57,13 @@ public class UserCertificateDto {
 
     public void setValidTo(Date validTo) {
         this.validTo = validTo;
+    }
+
+    public Boolean getRevoked() {
+        return isRevoked;
+    }
+
+    public void setRevoked(Boolean revoked) {
+        isRevoked = revoked;
     }
 }

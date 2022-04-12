@@ -28,6 +28,8 @@ public interface CertificateService {
     /** Method that checks if the certificate chain is valid */
     boolean isCertificateChainValid(Certificate certificate);
 
+    void revokeCertificate(String serialNumber);
+
     /** Method that extracts issuer data from keystore, including private key information */
     IssuerData getIssuerDataFromKeyStore(String alias, String certificateType);
 

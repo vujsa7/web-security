@@ -18,6 +18,7 @@ import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.oer.its.CertificateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
@@ -95,6 +96,33 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public boolean isCertificateChainValid(Certificate certificate) {
         return true;
+    }
+
+    @Transactional
+    @Override
+    public void revokeCertificate(String serialNumber) {
+        Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
+        certificate.setRevoked(true);
+        certificateRepository.save(certificate);
+        if(isCertificateCA(certificate.getAlias(), certificate.getCertificateType())){
+            List<Certificate> issuedCertificates = certificateRepository.findAllByIssuerAlias(certificate.getAlias());
+            for(Certificate cert : issuedCertificates){
+                if(!certificate.equals(cert)) {
+                    revokeCertificate(cert.getSerialNumber());
+                }
+            }
+        }
+    }
+
+    public boolean isCertificateCA(String alias, String certificateType) {
+        String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(certificateType);
+        String keyStorePass = keyStoreInfo.getKeyStorePass(certificateType);
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+        X509Certificate cert = keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, alias);
+        if(cert.getBasicConstraints() != -1) {
+            return true;
+        }
+        return false;
     }
 
     @Override
