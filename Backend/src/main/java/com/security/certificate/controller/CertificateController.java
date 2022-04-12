@@ -10,6 +10,7 @@ import com.security.certificate.service.CertificateService;
 import com.security.data.model.IssuerData;
 import com.security.data.model.SubjectData;
 import com.security.data.service.DataService;
+import com.security.user.model.User;
 import com.security.user.service.RoleService;
 import com.security.user.service.UserService;
 import com.sun.net.httpserver.Authenticator;
@@ -124,6 +125,15 @@ public class CertificateController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(value = "/revocationStatus/{serialNumber}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<UserCertificateDto> checkCertificateStatus(@PathVariable() String serialNumber){
+        Certificate cert = certificateService.getCertificateBySerialNumber(serialNumber);
+        Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
+        String issuerName = issuerCert.getCommonName();
+        UserCertificateDto userCertificate = new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked());
+        return new ResponseEntity<>(userCertificate, HttpStatus.OK);
+    }
 
 
 }
