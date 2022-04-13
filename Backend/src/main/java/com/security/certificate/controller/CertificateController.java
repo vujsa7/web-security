@@ -16,14 +16,15 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.File;
 import java.security.*;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -67,6 +68,20 @@ public class CertificateController {
             userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked()));
         }
         return userCertificates;
+    }
+
+    @GetMapping(value = "/certificates/{serialNumber}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Resource> getCertificateFile(@PathVariable() String serialNumber){
+        File certFile = certificateService.getCertificateFile(serialNumber);
+        FileSystemResource resource = new FileSystemResource(certFile);
+
+        MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+        ContentDisposition disposition = ContentDisposition.attachment().filename(resource.getFilename()).build();
+        headers.setContentDisposition(disposition);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     @GetMapping(value = "/certificates/user")

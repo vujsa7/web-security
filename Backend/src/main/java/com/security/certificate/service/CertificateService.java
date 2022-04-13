@@ -3,6 +3,7 @@ package com.security.certificate.service;
 import com.security.certificate.model.Certificate;
 import com.security.data.model.IssuerData;
 
+import java.io.File;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -31,4 +32,6 @@ public interface CertificateService {
     X509Certificate saveCertificate(X509Certificate certificate, PrivateKey privateKey, String email, String certificateType, Certificate issuerCertificate);
 
     X509Certificate getX509Certificate(String serialNumber);
+
+    File getCertificateFile(String serialNumber);
 }

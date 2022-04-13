@@ -45,4 +45,18 @@ export class CertificateCardComponent implements OnInit {
     this.showIsRevoked.emit(this.certificate.serialNumber);
   }
 
+  downloadCertificate(){
+    this.certificateService.getCertificateFile(this.certificate.serialNumber).subscribe(
+      data => {
+        const blob = new Blob([data], {type: 'application/octet-stream'})
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+        return;
+      },
+      error => {
+        this.toastr.error('There was an error while downloading the certificate')
+      }
+    )
+  }
+
 }

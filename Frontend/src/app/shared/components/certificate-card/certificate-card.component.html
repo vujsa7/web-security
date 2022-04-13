@@ -15,7 +15,7 @@
         <app-primary-button [text]="'Full Info'" (click)="showFullInfoDialog()"></app-primary-button>    
         <app-primary-button *ngIf="mode=='user'" [text]="'Is Revoked?'" [color]="'#a2a2a2'" class="mx-4" (click)="showIsRevokedDialog()"></app-primary-button>
         <app-primary-button *ngIf="mode=='admin'" [text]="'Revoke'" [color]="'#E43232'" class="mx-4" (click)="revokeCertificate()"></app-primary-button>
-        <button class="download-btn d-flex align-items-center justify-content-center">
+        <button class="download-btn d-flex align-items-center justify-content-center" (click)="downloadCertificate()">
             <svg class="download-icon"></svg>
         </button>
     </div>

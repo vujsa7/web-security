@@ -19,6 +19,14 @@ export class CertificateService {
     return this.http.get<Certificate[]>(this.baseUrl + "certificates/user", { headers: this.authService.getHeader() });
   }
 
+  getCertificateFile(serialNumber: string): Observable<any>{
+    let options: any = { 
+      headers: this.authService.getHeader(),
+      responseType: 'application/octet-stream' 
+    }
+    return this.http.get<any>(this.baseUrl + "certificates/" + serialNumber, options);
+  }
+
   getAllCertificates(): Observable<Certificate[]>{
     return this.http.get<Certificate[]>(this.baseUrl + "certificates", { headers: this.authService.getHeader() });
   }

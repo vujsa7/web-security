@@ -10,6 +10,7 @@ import com.security.keystore.KeyStoreWriter;
 import com.security.user.model.User;
 import com.security.user.service.UserService;
 import com.security.util.ArrayUtils;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
@@ -224,6 +227,29 @@ public class CertificateServiceImpl implements CertificateService {
         String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(certificate.getCertificateType());
         String keyStorePass = keyStoreInfo.getKeyStorePass(certificate.getCertificateType());
         return keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, certificate.getAlias());
+    }
+
+    @Override
+    public File getCertificateFile(String serialNumber) {
+        Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
+        String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(certificate.getCertificateType());
+        String keyStorePass = keyStoreInfo.getKeyStorePass(certificate.getCertificateType());
+        KeyStoreReader keyStoreReader = new KeyStoreReader();
+        X509Certificate cert = keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, certificate.getAlias());
+        File certFile = new File("cert.cer");
+        final FileOutputStream os;
+        try {
+            os = new FileOutputStream(certFile);
+            os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
+            os.write(Base64.encodeBase64(cert.getEncoded(), true));
+            os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
+            os.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException | CertificateEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return certFile;
     }
 
 }
