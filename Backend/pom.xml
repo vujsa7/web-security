@@ -72,6 +72,11 @@
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.70</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,6 +84,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-maven-plugin</artifactId>
+                <version>3.0.3</version>
             </plugin>
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
