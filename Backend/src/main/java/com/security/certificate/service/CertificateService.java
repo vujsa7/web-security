@@ -29,4 +29,6 @@ public interface CertificateService {
     IssuerData getIssuerDataFromKeyStore(String alias, String certificateType);
 
     X509Certificate saveCertificate(X509Certificate certificate, PrivateKey privateKey, String email, String certificateType, Certificate issuerCertificate);
+
+    X509Certificate getX509Certificate(String serialNumber);
 }

@@ -6,7 +6,7 @@
         <img class="robot-illustration" src="assets/images/8.png" alt="No certificates">
         <div class="grey-block"></div>
         <span class="large-text">Oops...</span>
-        <span class="subtext">You can't issue any certificates. Only certificate authorities can do that.</span>
+        <span class="subtext">You can't issue any certificates. You don't have any intermediate certificates.</span>
         <span class="subtext link" routerLink="/certificates/dashboard">Dashboard</span>
     </div>
     <div *ngIf="hasIssuingCertificates() && !isLoading">
@@ -98,7 +98,7 @@
                             <label><input class="checkbox" type="checkbox" formArrayName="keyUsages"
                                     (value)="keyUsage.keyUsageValue"
                                     (change)="keyUsageChanged($event, keyUsage.keyUsageValue)" />
-                                <span class="checkbox-label">{{keyUsage.keyUsageName | keyUsage}}</span>
+                                <span class="checkbox-label">{{keyUsage.keyUsageValue | keyUsage}}</span>
                             </label>
                         </div>
                     </div>

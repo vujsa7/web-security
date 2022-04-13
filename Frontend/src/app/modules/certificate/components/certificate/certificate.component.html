@@ -1,6 +1,8 @@
+<app-message-dialog [hidden]="!isMessageDialogVisible" [title]="messageDialogTitle" [message]="messageDialogMessage" [buttonText]="messageDialogButtonText" (notify)="onMessageDialogNotify($event)"></app-message-dialog>
+<app-certificate-info-dialog *ngIf="certificateFull && isFullCertificateLoaded" [certificate]="certificateFull" (notify)="onCertificateDialogClose($event)"></app-certificate-info-dialog> 
 <div class="d-flex flex-column certificate-wrapper">
     <div *ngIf="isLoading" class="d-flex align-items-center justify-content-center" style="position: relative; height: calc(100vh - 80px)">
-        <ngx-spinner bdColor="rgb(255,255,255)" size="medium" color="#006494" type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
+        <ngx-spinner bdColor="rgb(255,255, 255)" size="medium" color="#006494" type="ball-clip-rotate" [fullScreen]="false"></ngx-spinner>
     </div>
     <div class="no-certificates-wrapper" *ngIf="!hasCertificates() && !isLoading">
         <img class="robot-illustration" src="assets/images/31.png" alt="No certificates">
@@ -19,7 +21,7 @@
     </div>
     <div *ngIf="hasCertificates() && !isLoading" class="d-flex flex-column">
         <span class="title mb-3">List of my certificates</span>
-        <app-certificate-card *ngFor="let certificate of certificates" class="mb-3" [certificate]="certificate" [mode]="'user'"></app-certificate-card>
+        <app-certificate-card *ngFor="let certificate of certificates" class="mb-3" [certificate]="certificate" [mode]="'user'" (showFullInfo)="onShowFullInfo($event)" (showIsRevoked)="onShowIsRevoked($event)"></app-certificate-card>
     </div>
 </div>
 

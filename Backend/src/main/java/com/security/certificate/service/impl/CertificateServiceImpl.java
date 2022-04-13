@@ -161,6 +161,8 @@ public class CertificateServiceImpl implements CertificateService {
         return certificate;
     }
 
+
+
     private void writeCertificateChainToKeyStore( String keyStoreFile, String keyStorePass, PrivateKey privateKey, X509Certificate[] certificateChain, String alias) {
         keyStoreWriter.loadKeyStore(keyStoreFile, keyStorePass.toCharArray());
         keyStoreWriter.write(alias, privateKey, keyStorePass.toCharArray(), certificateChain);
@@ -213,7 +215,14 @@ public class CertificateServiceImpl implements CertificateService {
     private CertificateDto ConvertX509ToCertificateDto(X509Certificate certificate){
         //TODO do conversion
         return null;
+    }
 
+    @Override
+    public X509Certificate getX509Certificate(String serialNumber) {
+        Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
+        String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(certificate.getCertificateType());
+        String keyStorePass = keyStoreInfo.getKeyStorePass(certificate.getCertificateType());
+        return keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, certificate.getAlias());
     }
 
 

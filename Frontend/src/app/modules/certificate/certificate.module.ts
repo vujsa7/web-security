@@ -10,12 +10,14 @@ import { RevokeComponent } from './components/revoke/revoke.component';
 import { KeyUsageService } from './services/key-usage.service';
 import { CertificateService } from './services/certificate.service';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { CertificateInfoDialogComponent } from './components/certificate-info-dialog/certificate-info-dialog.component';
 
 @NgModule({
   declarations: [
     CertificateComponent,
     IssueComponent,
-    RevokeComponent
+    RevokeComponent,
+    CertificateInfoDialogComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Certificate } from 'src/app/modules/certificate/models/certificate.model';
 import { CertificateService } from 'src/app/modules/certificate/services/certificate.service';
@@ -11,6 +11,8 @@ import { CertificateService } from 'src/app/modules/certificate/services/certifi
 export class CertificateCardComponent implements OnInit {
   @Input() mode!: string;
   @Input() certificate!: Certificate;
+  @Output() showFullInfo = new EventEmitter<string>();
+  @Output() showIsRevoked = new EventEmitter<string>();
 
   constructor(private toastr: ToastrService, private certificateService: CertificateService) { }
 
@@ -33,6 +35,14 @@ export class CertificateCardComponent implements OnInit {
     else{
       this.toastr.error('This certificate has already been revoked')
     }
+  }
+
+  showFullInfoDialog(){
+    this.showFullInfo.emit(this.certificate.serialNumber);
+  }
+
+  showIsRevokedDialog(){
+    this.showIsRevoked.emit(this.certificate.serialNumber);
   }
 
 }

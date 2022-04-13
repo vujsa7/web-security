@@ -1,0 +1,39 @@
+@import "src/styles/main.scss";
+
+.wrapper{
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+}
+
+    .overlay{
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(23, 23, 23, 0.5);
+    }
+
+    .dialog-container{
+        position: absolute;
+        z-index: 101;
+        background-color: white;
+        padding: 30px 30px;
+        width: 600px;
+    }
+
+        h5{
+            color: color(blue);
+            margin-bottom: 10px !important;
+        }
+
+        .message{
+            color: color(darkgrey);
+            display: inline-block;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .button{
+            width: 100%;
+        }

@@ -1,0 +1,36 @@
+<div class="wrapper d-flex justify-content-center align-items-center">
+    <div class="overlay" (click)="closeDialog()"></div>
+    <div class="dialog-container d-flex flex-column align-items-start">
+        <div class="actions d-flex pt-1">
+            <span class="link me-4">Download</span>
+            <span style="cursor: pointer;" (click)="closeDialog()">Close</span>
+        </div>
+        <h5>Version</h5>
+        <span>{{certificate.version}}</span>
+        <h5>Serial number</h5>
+        <span>{{certificate.serialNumber}}</span>
+        <h5>Issuer</h5>
+        <span class="mb-2">CN = {{certificate.issuerCN}}</span>
+        <span class="mb-2">O = {{certificate.issuerO}}</span>
+        <span class="mb-2">L = {{certificate.issuerL}}</span>
+        <span class="mb-2">S = {{certificate.issuerS}}</span>
+        <span>C = {{certificate.issuerC}}</span>
+        <h5>Subject</h5>
+        <span class="mb-2">CN = {{certificate.issuerCN}}</span>
+        <span class="mb-2">O = {{certificate.issuerO}}</span>
+        <span class="mb-2">L = {{certificate.issuerL}}</span>
+        <span class="mb-2">S = {{certificate.issuerS}}</span>
+        <span>C = {{certificate.issuerC}}</span>
+        <h5>Validity period</h5>
+        <span class="mb-2">Valid from: {{certificate.validFrom}}</span>
+        <span>Valid to: {{certificate.validTo}}</span>
+        <h5>Public key</h5>
+        <span>{{certificate.publicKey}}</span>
+        <h5>Basic Constraints</h5>
+        <span>Subject Type = {{certificate.subjectType}}</span>
+        <h5>Key Usage</h5>
+        <div *ngFor="let keyUsage of certificate.keyUsages">
+            <span class="mb-2">{{keyUsage.keyUsageValue | keyUsage}}</span>
+        </div>
+    </div>
+</div>

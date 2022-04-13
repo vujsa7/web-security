@@ -1,0 +1,55 @@
+@import "src/styles/main.scss";
+
+.wrapper{
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+}
+
+    .overlay{
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(23, 23, 23, 0.5);
+    }
+
+    .dialog-container{
+        position: absolute;
+        z-index: 101;
+        background-color: white;
+        padding: 30px 30px;
+        width: 600px;
+        height: 80vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+        .actions{
+            position: absolute;
+            top: 24px;
+            right: 30px;
+        }
+
+            span{
+                width: 100%;
+                display: inline-block;
+                overflow-wrap: break-word;
+                color: color(darkgrey);
+                margin-bottom: 15px;
+            }
+
+            .link{
+                cursor: pointer;
+                display: inline-block;
+                color: color(blue);
+            }
+
+        h5{
+            color: color(blue);
+            margin-bottom: 5px !important;
+        }
+
+        
+
+        

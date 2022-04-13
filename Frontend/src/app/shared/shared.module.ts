@@ -8,6 +8,7 @@ import { HeaderComponent } from './layout/header/header.component';
 import { RouterModule } from '@angular/router';
 import { KeyUsagePipe } from './pipes/key-usage.pipe';
 import { ExtendedKeyUsagePipe } from './pipes/extended-key-usage.pipe';
+import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { ExtendedKeyUsagePipe } from './pipes/extended-key-usage.pipe';
     PrimaryButtonComponent,
     CertificateCardComponent,
     HeaderComponent,
+    MessageDialogComponent,
 
     // My custom pipes
     KeyUsagePipe,
@@ -34,6 +36,7 @@ import { ExtendedKeyUsagePipe } from './pipes/extended-key-usage.pipe';
     PrimaryButtonComponent,
     CertificateCardComponent,
     HeaderComponent,
+    MessageDialogComponent,
     ReactiveFormsModule,
     FormsModule,
     NgxSpinnerModule,

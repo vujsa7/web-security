@@ -26,9 +26,6 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    /** Generating data for the subject of the certificate,
-     * subject is an entity who is receiving a certificate
-     * this is publicly available data for the certificate */
     public SubjectData generateSubjectData(CertificateDto certificateDto, PublicKey publicKey) {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, certificateDto.getCommonName());
@@ -42,9 +39,6 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    /** Generating data for the issuer of the certificate
-     * Use this method for the generating Root CA issuer data
-     * Generating data is private key and basic info for the issuer */
     public IssuerData generateIssuerData(CertificateDto certificateDto, PrivateKey privateKey) {
         //KeyPair k = certificateGeneratorService.generateKeyPair();
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
