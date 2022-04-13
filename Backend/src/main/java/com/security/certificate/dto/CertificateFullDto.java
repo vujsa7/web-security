@@ -21,14 +21,15 @@ public class CertificateFullDto {
     private Date validTo;
     private String subjectType;
     private KeyUsageDto[] keyUsages;
-    private String[] extenderKeyUsages;
+    private String[] extendedKeyUsages;
     private String publicKey;
+    private String issuerSerialNumber;
 
 
     public CertificateFullDto(String version, String serialNumber, String signatureAlgorithm, String issuerCN, String issuerO,
                               String issuerC, String issuerS, String issuerL, String subjectCN, String subjectO, String subjectC, String subjectS, String subjectL,
-                              Date validFrom, Date validTo, String subjectType, KeyUsageDto[] keyUsages, String[] extenderKeyUsages,
-                              String publicKey) {
+                              Date validFrom, Date validTo, String subjectType, KeyUsageDto[] keyUsages, String[] extendedKeyUsages,
+                              String publicKey, String issuerSerialNumber) {
         this.version = version;
         this.serialNumber = serialNumber;
         this.signatureAlgorithm = signatureAlgorithm;
@@ -46,8 +47,9 @@ public class CertificateFullDto {
         this.validTo = validTo;
         this.subjectType = subjectType;
         this.keyUsages = keyUsages;
-        this.extenderKeyUsages = extenderKeyUsages;
+        this.extendedKeyUsages = extendedKeyUsages;
         this.publicKey = publicKey;
+        this.issuerSerialNumber = issuerSerialNumber;
     }
 
     public String getVersion() {
@@ -182,16 +184,16 @@ public class CertificateFullDto {
         return keyUsages;
     }
 
-    public void setKeyUsages(KeyUsageDto[] keyUsageDtos) {
-        this.keyUsages = keyUsageDtos;
+    public void setKeyUsages(KeyUsageDto[] keyUsage) {
+        this.keyUsages = keyUsage;
     }
 
-    public String[] getExtenderKeyUsages() {
-        return extenderKeyUsages;
+    public String[] getExtendedKeyUsages() {
+        return extendedKeyUsages;
     }
 
-    public void setExtenderKeyUsages(String[] extenderKeyUsages) {
-        this.extenderKeyUsages = extenderKeyUsages;
+    public void setExtendedKeyUsages(String[] extendedKeyUsages) {
+        this.extendedKeyUsages = extendedKeyUsages;
     }
 
     public String getPublicKey() {
@@ -201,4 +203,8 @@ public class CertificateFullDto {
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
+
+    public String getIssuerSerialNumber() { return issuerSerialNumber; }
+
+    public void setIssuerSerialNumber(String issuerSerialNumber) { this.issuerSerialNumber = issuerSerialNumber; }
 }

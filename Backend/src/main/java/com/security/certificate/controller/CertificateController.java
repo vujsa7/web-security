@@ -183,8 +183,7 @@ public class CertificateController {
     public ResponseEntity<CertificateFullDto> getCertificateFull(@PathVariable() String serialNumber, Principal principal){
         X509Certificate certX509 = certificateService.getX509Certificate(serialNumber);
         Certificate cert = certificateService.getCertificateBySerialNumber(serialNumber);
-        if(!cert.getUser().getEmail().equals(principal.getName()) || cert.getCertificateType().equals("ee"))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Certificate certIssuer = certificateService.getCertificateByAlias(cert.getIssuerAlias());
         try {
             CertificateFullDto certFull = new CertificateFullDto(
                     "v" + String.valueOf(certX509.getVersion()), certX509.getSerialNumber().toString(), certX509.getSigAlgName(),
@@ -194,7 +193,7 @@ public class CertificateController {
                     getNameInfo(certX509.getSubjectX500Principal(), "O"), getNameInfo(certX509.getSubjectX500Principal(), "C"),
                     getNameInfo(certX509.getSubjectX500Principal(), "S"), getNameInfo(certX509.getSubjectX500Principal(), "L"),
                     certX509.getNotBefore(), certX509.getNotAfter(), cert.getCertificateType().equals("ee") ? "End Enitity" : "Certificate Authority",
-                    getKeyUsages(certX509.getKeyUsage()), certX509.getExtendedKeyUsage().toArray(new String[0]), publicKeyToString(certX509.getPublicKey()));
+                    getKeyUsages(certX509.getKeyUsage()), certX509.getExtendedKeyUsage().toArray(new String[0]), publicKeyToString(certX509.getPublicKey()), certIssuer.getSerialNumber());
             return new ResponseEntity<CertificateFullDto>(certFull, HttpStatus.OK);
         } catch (CertificateParsingException e) {
             e.printStackTrace();

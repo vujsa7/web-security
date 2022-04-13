@@ -108,30 +108,37 @@ export class IssueComponent implements OnInit {
     if(certificateType == 'rootCa'){
       this.issueCertificateForm.get("subjectType")?.setValue("Root CA (self signed)");
       this.subjectTypeChanged();
-
       const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
       selectedKeyUsages.clear();
       selectedKeyUsages.push(new FormControl(128));
       selectedKeyUsages.push(new FormControl(4));
       selectedKeyUsages.push(new FormControl(32));
       selectedKeyUsages.push(new FormControl(2));
+      const selectedExtendedKeyUsages = (this.issueCertificateForm.controls.extendedKeyUsages as FormArray);
+      selectedExtendedKeyUsages.clear();
+      selectedExtendedKeyUsages.push(new FormControl("serverAuth"));
+      selectedExtendedKeyUsages.push(new FormControl("clientAuth"));
     } else if(certificateType == 'intermediateCa'){
       this.issueCertificateForm.get("subjectType")?.setValue("Intermediate CA");
       this.subjectTypeChanged();
-
       const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
       selectedKeyUsages.clear();
       selectedKeyUsages.push(new FormControl(128));
       selectedKeyUsages.push(new FormControl(4));
       selectedKeyUsages.push(new FormControl(32));
       selectedKeyUsages.push(new FormControl(2));
+      const selectedExtendedKeyUsages = (this.issueCertificateForm.controls.extendedKeyUsages as FormArray);
+      selectedExtendedKeyUsages.clear();
+      selectedExtendedKeyUsages.push(new FormControl("serverAuth"));
     } else if(certificateType == 'endEntity'){
       this.issueCertificateForm.get("subjectType")?.setValue("End Entity");
       this.subjectTypeChanged();
-
       const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
       selectedKeyUsages.clear();
       selectedKeyUsages.push(new FormControl(128));
+      const selectedExtendedKeyUsages = (this.issueCertificateForm.controls.extendedKeyUsages as FormArray);
+      selectedExtendedKeyUsages.clear();
+      selectedExtendedKeyUsages.push(new FormControl("serverAuth"));
     }
   }
 

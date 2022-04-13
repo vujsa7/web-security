@@ -102,6 +102,7 @@
                     <div class="key-usage-grid">
                         <div class="d-flex align-items-center" *ngFor="let keyUsage of keyUsages">
                             <label><input class="checkbox" type="checkbox" formArrayName="keyUsages"
+                                    [checked]="issueCertificateForm.controls['keyUsages'].value.includes(keyUsage.keyUsageValue)"
                                     (value)="keyUsage.keyUsageValue"
                                     (change)="keyUsageChanged($event, keyUsage.keyUsageValue)" 
                                     [disabled]="certificateType != 'custom'"/>
@@ -113,6 +114,7 @@
                     <div class="extended-key-usage-grid">
                         <div class="d-flex align-items-center" *ngFor="let extendedKeyUsage of extendedKeyUsages">
                             <label><input class="checkbox" type="checkbox" formArrayName="extendedKeyUsages"
+                                    [checked]="issueCertificateForm.controls['extendedKeyUsages'].value.includes(extendedKeyUsage)"
                                     (value)="extendedKeyUsage"
                                     (change)="extendedKeyUsageChanged($event, extendedKeyUsage)" 
                                     [disabled]="certificateType != 'custom'"/>

@@ -20,10 +20,12 @@ export class CertificateFull{
     keyUsages: KeyUsage[] = [];
     extendedKeyUsages: string[] = [];
     publicKey: string = "";
+    issuerSerialNumber: string = "";
 
     constructor(version: string, serialNumber: string, signatureAlgorithm: string, issuerCN: string,
         issuerO: string, issuerC: string, issuerS: string, issuerL: string, subjectCN: string, subjectO: string, subjectC: string,
-        subjectS: string, subjectL: string, validFrom: Date, validTo: Date, subjectType: string, keyUsages: KeyUsage[], extendedKeyUsages: string[], publicKey: string){
+        subjectS: string, subjectL: string, validFrom: Date, validTo: Date, subjectType: string, keyUsages: KeyUsage[],
+        extendedKeyUsages: string[], publicKey: string, issuerSerialNumber: string){
 
         this.version = version;
         this.serialNumber = serialNumber;
@@ -44,5 +46,6 @@ export class CertificateFull{
         this.keyUsages = keyUsages;
         this.extendedKeyUsages= extendedKeyUsages;
         this.publicKey = publicKey;
+        this.issuerSerialNumber = issuerSerialNumber;
     }    
 }
