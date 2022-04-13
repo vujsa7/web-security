@@ -38,13 +38,9 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
     @Override
     public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateTemplateType certificateTemplateType) {
         try {
-            // Creating builder for signing the certificate
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
             ContentSigner contentSigner = builder.build(issuerData.getPrivateKey());
-
-//            KeyPair subjectKeyPair = generateKeyPair();
-//            subjectData.setPublicKey(subjectKeyPair.getPublic());
 
             X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
                     issuerData.getX500name(),
@@ -65,8 +61,7 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
             JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
             certConverter = certConverter.setProvider("BC");
 
-            X509Certificate cert = certConverter.getCertificate(certHolder);
-            return cert;
+            return certConverter.getCertificate(certHolder);
         } catch (IllegalArgumentException | IllegalStateException | OperatorCreationException | CertificateException | CertIOException e) {
             e.printStackTrace();
         }

@@ -13,8 +13,11 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
     @Query("select c from Certificate c where c.serialNumber = :serialNumber and c.validFrom <= current_timestamp and c.validTo >= current_timestamp")
     Certificate findValidCertificateBySerialNumber(String serialNumber);
 
-    @Query("select c from Certificate c left outer join User u on c.user.id = u.id where c.user.email = :email and c.validFrom <= current_timestamp and c.validTo >= current_timestamp and c.certificateType != 'ee'")
+    @Query("select c from Certificate c left outer join User u on c.user.id = u.id where c.user.email = :email and c.validFrom <= current_timestamp and c.validTo >= current_timestamp and c.certificateType not like 'ee'")
     List<Certificate> findIssuingCertificates(String email);
+
+    @Query("select c.isRevoked from Certificate c where c.serialNumber = :serialNumber")
+    Boolean isRevoked(String serialNumber);
 
     Certificate findOneBySerialNumber(String serialNumber);
 

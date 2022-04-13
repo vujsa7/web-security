@@ -14,7 +14,7 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
-import org.bouncycastle.jce.X509Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -126,7 +126,6 @@ public class CertificateController {
             return new ResponseEntity<>("Unsuccessful. Invalid dates used for signing, please check the date ranges and try again.", HttpStatus.BAD_REQUEST);
         }
 
-        // TODO: Create a method for validating certificate chain (check if any of certificates is revoked in the chain)
         if(!certificateService.isCertificateChainValid(issuerCertificate))
             return new ResponseEntity<>("Unable to issue new certificate because of invalid certificate chain. Either a " +
                     "certificate in the chain was revoked or isn't valid anymore.", HttpStatus.BAD_REQUEST);
@@ -138,7 +137,7 @@ public class CertificateController {
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
                 certificateDto.getExtendedKeyUsage(), null);
 
-        certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() == true ? "ca" : "ee", issuerCertificate);
+        certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() ? "ca" : "ee", issuerCertificate);
 
         return new ResponseEntity<>(principal.getName(), HttpStatus.CREATED);
     }
@@ -188,23 +187,23 @@ public class CertificateController {
     private KeyUsageDto[] getKeyUsages(boolean[] keyUsages) {
         List<KeyUsageDto> keyUsagesList = new ArrayList<KeyUsageDto>();
         for(int i = 0; i < keyUsages.length; i++){
-            if(i == 0 && keyUsages[i]==true)
+            if(i == 0 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("digitalSignature", 128));
-            else if(i == 1 && keyUsages[i]==true)
+            else if(i == 1 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("nonRepudiation", 64));
-            else if(i == 2 && keyUsages[i]==true)
+            else if(i == 2 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("keyEncipherment", 32));
-            else if(i == 3 && keyUsages[i]==true)
+            else if(i == 3 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("dataEncipherment", 16));
-            else if(i == 4 && keyUsages[i]==true)
+            else if(i == 4 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("keyAgreement", 8));
-            else if(i == 5 && keyUsages[i]==true)
+            else if(i == 5 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("keyCertSign", 4));
-            else if(i == 6 && keyUsages[i]==true)
+            else if(i == 6 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("cRLSign", 2));
-            else if(i == 7 && keyUsages[i]==true)
+            else if(i == 7 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("encipherOnly", 1));
-            else if(i == 8 && keyUsages[i]==true)
+            else if(i == 8 && keyUsages[i])
                 keyUsagesList.add(new KeyUsageDto("decipherOnly", 32768));
         }
         KeyUsageDto[] keyUsagesArray = new KeyUsageDto[keyUsagesList.size()];

@@ -127,8 +127,6 @@ public class Certificate {
     }
 
     public boolean isInValidDateRange(Date validFrom, Date validTo){
-        if(this.validFrom.compareTo(validFrom) < 0 && this.validTo.compareTo(validTo) > 0)
-            return true;
-        return false;
+        return this.validFrom.compareTo(validFrom) < 0 && this.validTo.compareTo(validTo) > 0;
     }
 }

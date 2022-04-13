@@ -1,7 +1,6 @@
 package com.security.certificate.service.impl;
 
 import com.security.certificate.dao.CertificateRepository;
-import com.security.certificate.dto.CertificateDto;
 import com.security.certificate.model.Certificate;
 import com.security.certificate.service.CertificateService;
 import com.security.data.model.IssuerData;
@@ -15,18 +14,17 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
-import org.bouncycastle.oer.its.CertificateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
+import java.security.*;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -100,7 +98,35 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public boolean isCertificateChainValid(Certificate certificate) {
+        X509Certificate[] chain = extractCertificateChain(certificate);
+
+        return verifiedBySignatures(chain) && validByRevocationStatuses(chain) && validByDates(chain);
+    }
+
+    private boolean verifiedBySignatures(X509Certificate[] chain) {
+        int rootIndex = chain.length - 1;
+
+        try{
+            chain[rootIndex].verify(chain[rootIndex].getPublicKey());
+            for(int i = 0; i < rootIndex; i++){
+                chain[i].verify(chain[i + 1].getPublicKey());
+            }
+        } catch (IllegalArgumentException | IllegalStateException | CertificateException | NoSuchAlgorithmException | InvalidKeyException | NoSuchProviderException | SignatureException e){
+            return false;
+        }
+
         return true;
+    }
+
+    private boolean validByRevocationStatuses(X509Certificate[] chain){
+        return Arrays.stream(chain)
+                .noneMatch(cert -> certificateRepository.isRevoked(cert.getSerialNumber().toString()));
+    }
+
+    private boolean validByDates(X509Certificate[] chain){
+        Date currentDate = new Date();
+        return Arrays.stream(chain)
+                .allMatch(cert -> currentDate.after(cert.getNotBefore()) && currentDate.before(cert.getNotAfter()));
     }
 
     @Transactional
@@ -173,8 +199,7 @@ public class CertificateServiceImpl implements CertificateService {
         String keyStoreFile = keyStoreInfo.getKeyStoreFileLocation(cert.getCertificateType());
         String keyStorePass = keyStoreInfo.getKeyStorePass(cert.getCertificateType());
 
-        X509Certificate[] certificateChain = keyStoreReader.readCertificateChain(keyStoreFile, keyStorePass, cert.getAlias());
-        return certificateChain;
+        return keyStoreReader.readCertificateChain(keyStoreFile, keyStorePass, cert.getAlias());
     }
 
     // TODO: Generate unique alias from db (not from keystore)
@@ -193,30 +218,6 @@ public class CertificateServiceImpl implements CertificateService {
         return IETFUtils.valueToString(cn.getFirst().getValue());
     }
 
-    public List<CertificateDto> getCertificates(){
-        KeyStoreReader reader=new KeyStoreReader();
-        List<CertificateDto> certificateDtos=new ArrayList<CertificateDto>();
-        List<X509Certificate> rootCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("root"),keyStoreInfo.getKeyStorePass("root"));
-        List<X509Certificate> caCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("ca"),keyStoreInfo.getKeyStorePass("ca"));
-        List<X509Certificate> endCertificates=keyStoreReader.getCertificatesInKeyStore(keyStoreInfo.getKeyStoreFileLocation("end"),keyStoreInfo.getKeyStorePass("end"));
-        for(X509Certificate rootCertificate:rootCertificates){
-            certificateDtos.add(ConvertX509ToCertificateDto(rootCertificate));
-        }
-        for(X509Certificate caCertificate:caCertificates){
-            certificateDtos.add(ConvertX509ToCertificateDto(caCertificate));
-        }
-        for(X509Certificate endCertificate:endCertificates){
-            certificateDtos.add(ConvertX509ToCertificateDto(endCertificate));
-        }
-        return certificateDtos;
-
-    }
-
-    private CertificateDto ConvertX509ToCertificateDto(X509Certificate certificate){
-        //TODO do conversion
-        return null;
-    }
-
     @Override
     public X509Certificate getX509Certificate(String serialNumber) {
         Certificate certificate = certificateRepository.findOneBySerialNumber(serialNumber);
@@ -224,6 +225,5 @@ public class CertificateServiceImpl implements CertificateService {
         String keyStorePass = keyStoreInfo.getKeyStorePass(certificate.getCertificateType());
         return keyStoreReader.readX509Certificate(keyStoreFile, keyStorePass, certificate.getAlias());
     }
-
 
 }
