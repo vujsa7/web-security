@@ -8,6 +8,7 @@ import com.security.certificate.service.CertificateService;
 import com.security.data.model.IssuerData;
 import com.security.data.model.SubjectData;
 import com.security.data.service.DataService;
+import com.security.user.model.User;
 import com.security.user.service.RoleService;
 import com.security.user.service.UserService;
 import org.bouncycastle.asn1.x500.RDN;
@@ -87,21 +88,12 @@ public class CertificateController {
     @GetMapping(value = "/certificates/user")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<UserCertificateDto> getCertificates(Principal principal){
-        List<UserCertificateDto> userCertificates = new ArrayList<>();
-        List<Certificate> certificates = certificateService.getValidCertificatesByUsersEmail(principal.getName());
-        for (Certificate cert : certificates){
-            Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
-            String issuerName = issuerCert.getCommonName();
-            userCertificates.add(new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked()));
-        }
-        return userCertificates;
-    }
-
-    @GetMapping(value = "/validCertificates/{username}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public List<ValidCertificateDto> getValidCertificates(@PathVariable() String username){
-        return certificateService.getValidCertificatesByUsersEmail(username).stream()
-                .map(cert -> new ValidCertificateDto(cert.getSerialNumber(), cert.getCommonName(), cert.getValidFrom(), cert.getValidTo()))
+        return certificateService.getCertificatesByUsersEmail(principal.getName()).stream()
+                .map(cert -> {
+                    Certificate issuerCert = certificateService.getCertificateByAlias(cert.getIssuerAlias());
+                    String issuerName = issuerCert.getCommonName();
+                    return new UserCertificateDto(cert.getSerialNumber(), cert.getCommonName(), issuerName, cert.getValidFrom(), cert.getValidTo(), cert.getRevoked());
+                })
                 .collect(Collectors.toList());
     }
 
@@ -115,14 +107,20 @@ public class CertificateController {
 
     @PostMapping(value = "/rootCertificates")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<String> issueRootCertificate(@RequestBody CertificateDto certificateDto){
-        // TODO: Validate parameters coming from the request (for example isCa must be true)
+    public ResponseEntity<String> issueRootCertificate(@RequestBody CertificateDto certificateDto,
+                                                       @RequestParam(required = false) CertificateTemplateType certificateTemplateType){
+        if(certificateTemplateType != null){
+            if(certificateTemplateType != CertificateTemplateType.rootCa){
+                return new ResponseEntity<>("Invalid template type.", HttpStatus.BAD_REQUEST);
+            }
+        }
+
         KeyPair keyPair = certificateGeneratorService.generateKeyPair();
         IssuerData issuerData = dataService.generateIssuerData(certificateDto, keyPair.getPrivate());
         SubjectData subjectData = dataService.generateSubjectData(certificateDto, keyPair.getPublic());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
-                certificateDto.getExtendedKeyUsage(), null);
+                certificateDto.getExtendedKeyUsage(), certificateTemplateType);
         certificateService.saveRootCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail());
 
         return new ResponseEntity<>("Root certificate successfully created.", HttpStatus.CREATED);
@@ -132,6 +130,12 @@ public class CertificateController {
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<String> createCertificate(Principal principal, @RequestBody CertificateDto certificateDto,
                                                     @RequestParam(required = false) CertificateTemplateType certificateTemplateType){
+        if(certificateTemplateType != null){
+            if(certificateTemplateType == CertificateTemplateType.rootCa){
+                return new ResponseEntity<>("Invalid template type.", HttpStatus.BAD_REQUEST);
+            }
+        }
+
         Certificate issuerCertificate = certificateService.getValidCertificateBySerialNumber(certificateDto.getSignWith());
         if(issuerCertificate == null)
             return new ResponseEntity<>("Sorry, certificate used for signing is not valid anymore or it does not exist in our records.", HttpStatus.BAD_REQUEST);
@@ -150,7 +154,7 @@ public class CertificateController {
         IssuerData issuerData = certificateService.getIssuerDataFromKeyStore(issuerCertificate.getAlias(), issuerCertificate.getCertificateType());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
-                certificateDto.getExtendedKeyUsage(), null);
+                certificateDto.getExtendedKeyUsage(), certificateTemplateType);
 
         certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() ? "ca" : "ee", issuerCertificate);
 

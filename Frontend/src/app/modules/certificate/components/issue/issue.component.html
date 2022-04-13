@@ -16,20 +16,26 @@
             <div class="template-wrapper d-flex flex-column">
                 <div class="radio-button-wrapper">
                     <label>
-                        <input type="radio" class="radio-button" name="sort" />
-                        Template 1
+                        <input checked type="radio" class="radio-button" name="sort" (change)="templateChanged($event, 'custom')"/>
+                        Custom
                     </label>
                 </div>
                 <div class="radio-button-wrapper">
                     <label>
-                        <input type="radio" class="radio-button" name="sort" />
-                        Template 2
+                        <input type="radio" class="radio-button" name="sort" (change)="templateChanged($event, 'rootCa')"/>
+                        Root CA
                     </label>
                 </div>
                 <div class="radio-button-wrapper">
                     <label>
-                        <input type="radio" class="radio-button" name="sort" />
-                        Template 3
+                        <input type="radio" class="radio-button" name="sort" (change)="templateChanged($event, 'intermediateCa')"/>
+                        Intermediate CA
+                    </label>
+                </div>
+                <div class="radio-button-wrapper">
+                    <label>
+                        <input type="radio" class="radio-button" name="sort" (change)="templateChanged($event, 'endEntity')"/>
+                        End Entity
                     </label>
                 </div>
             </div>
@@ -87,7 +93,7 @@
                                 <label for="subject-type" class="input-label">Subject Type</label>
                                 <select id="subject-type" name='subject-type' formControlName="subjectType"
                                     (change)="subjectTypeChanged()">
-                                    <option *ngFor="let subjectType of subjectTypes">{{subjectType}}</option>
+                                    <option *ngFor="let subjectType of subjectTypes" [disabled]="certificateType != 'custom'">{{subjectType}}</option>
                                 </select>
                             </div>
                         </div>
@@ -97,7 +103,8 @@
                         <div class="d-flex align-items-center" *ngFor="let keyUsage of keyUsages">
                             <label><input class="checkbox" type="checkbox" formArrayName="keyUsages"
                                     (value)="keyUsage.keyUsageValue"
-                                    (change)="keyUsageChanged($event, keyUsage.keyUsageValue)" />
+                                    (change)="keyUsageChanged($event, keyUsage.keyUsageValue)" 
+                                    [disabled]="certificateType != 'custom'"/>
                                 <span class="checkbox-label">{{keyUsage.keyUsageValue | keyUsage}}</span>
                             </label>
                         </div>
@@ -107,7 +114,8 @@
                         <div class="d-flex align-items-center" *ngFor="let extendedKeyUsage of extendedKeyUsages">
                             <label><input class="checkbox" type="checkbox" formArrayName="extendedKeyUsages"
                                     (value)="extendedKeyUsage"
-                                    (change)="extendedKeyUsageChanged($event, extendedKeyUsage)" />
+                                    (change)="extendedKeyUsageChanged($event, extendedKeyUsage)" 
+                                    [disabled]="certificateType != 'custom'"/>
                                 <span class="checkbox-label">{{extendedKeyUsage | extendedKeyUsage}}</span>
                             </label>
                         </div>

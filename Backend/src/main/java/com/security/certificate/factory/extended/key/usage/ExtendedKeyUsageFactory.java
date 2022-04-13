@@ -30,12 +30,11 @@ public class ExtendedKeyUsageFactory {
 
     public ExtendedKeyUsage createInstance(CertificateTemplateType certificateTemplateType){
         switch (certificateTemplateType){
-            case template1:
-                return new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth});
-            case template2:
-                return new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_clientAuth});
-            case template3:
+            case rootCa:
                 return new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth, KeyPurposeId.id_kp_clientAuth});
+            case intermediateCa:
+            case endEntity:
+                return new ExtendedKeyUsage(new KeyPurposeId[] {KeyPurposeId.id_kp_serverAuth});
             default:
                 return new ExtendedKeyUsage(new KeyPurposeId[] {});
         }

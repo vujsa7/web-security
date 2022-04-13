@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/authentication/auth.service';
@@ -45,5 +45,27 @@ export class CertificateService {
 
   getCertificateRevocationStatus(serialNumber: string):  Observable<Certificate>{
     return this.http.get<Certificate>(this.baseUrl + "revocationStatus/" + serialNumber, { headers: this.authService.getHeader() });
+  }
+
+  postRootCertificate(certificate: any, template?: any): Observable<any>{
+    return this.http.post<any>(this.baseUrl + 'rootCertificates', certificate, this.getOptions(template));
+  }
+
+  postCertificate(certificate: any, template?: any): Observable<any>{
+    return this.http.post<any>(this.baseUrl + 'certificates', certificate, this.getOptions(template));
+  }
+
+  private getOptions(certificateType: string): any {
+    if(certificateType == 'custom'){
+      return {
+        headers: this.authService.getHeader(), 
+        responseType: 'text'
+      }
+    }
+    return {
+      headers: this.authService.getHeader(), 
+      params: new HttpParams().set('certificateTemplateType', certificateType), 
+      responseType: 'text' as 'text'
+    }
   }
 }

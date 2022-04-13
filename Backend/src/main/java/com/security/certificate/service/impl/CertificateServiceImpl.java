@@ -55,9 +55,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> getValidCertificatesByUsersEmail(String email) {
-        return certificateRepository.findValidCertificates(email);
-        // TODO: Validate signature + check if revoked
+    public List<Certificate> getCertificatesByUsersEmail(String email) {
+        return certificateRepository.findCertificates(email);
     }
 
     @Override

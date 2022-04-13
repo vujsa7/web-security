@@ -11,7 +11,7 @@ import java.util.List;
 public interface CertificateService {
     List<Certificate> getAllCertificates();
 
-    List<Certificate> getValidCertificatesByUsersEmail(String email);
+    List<Certificate> getCertificatesByUsersEmail(String email);
 
     List<Certificate> getIssuingCertificatesByUsersEmail(String email);
 

@@ -18,14 +18,11 @@ public class KeyUsageFactory {
 
     public KeyUsage createInstance(CertificateTemplateType certificateTemplateType){
         switch (certificateTemplateType){
-            case template1:
-                return new KeyUsage(KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.dataEncipherment);
-            case template2:
-                return new KeyUsage(KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.cRLSign);
-            case template3:
-                return new KeyUsage(KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.decipherOnly);
+            case rootCa:
+            case intermediateCa:
+                return new KeyUsage(KeyUsage.digitalSignature | KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.cRLSign);
             default:
-                return new KeyUsage(KeyUsage.keyCertSign);
+                return new KeyUsage(KeyUsage.digitalSignature);
         }
     }
 }

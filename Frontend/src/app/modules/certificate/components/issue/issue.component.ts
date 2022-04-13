@@ -8,6 +8,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/core/authentication/auth.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-issue',
@@ -31,7 +32,9 @@ export class IssueComponent implements OnInit {
   isCreatingSelfSignedSignature: boolean = false;
   isLoading: boolean = false;
 
-  constructor(private spinner: NgxSpinnerService, private keyUsageService: KeyUsageService, private certificateService: CertificateService, private authService: AuthService) {
+  certificateType: string = 'custom';
+
+  constructor(private spinner: NgxSpinnerService, private keyUsageService: KeyUsageService, private certificateService: CertificateService, private authService: AuthService, private toastr: ToastrService) {
     this.initializeSubjectTypes();
   }
 
@@ -99,6 +102,39 @@ export class IssueComponent implements OnInit {
     }
   }
 
+  templateChanged(event: any, certificateType: string): void {
+    this.certificateType = certificateType;
+
+    if(certificateType == 'rootCa'){
+      this.issueCertificateForm.get("subjectType")?.setValue("Root CA (self signed)");
+      this.subjectTypeChanged();
+
+      const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
+      selectedKeyUsages.clear();
+      selectedKeyUsages.push(new FormControl(128));
+      selectedKeyUsages.push(new FormControl(4));
+      selectedKeyUsages.push(new FormControl(32));
+      selectedKeyUsages.push(new FormControl(2));
+    } else if(certificateType == 'intermediateCa'){
+      this.issueCertificateForm.get("subjectType")?.setValue("Intermediate CA");
+      this.subjectTypeChanged();
+
+      const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
+      selectedKeyUsages.clear();
+      selectedKeyUsages.push(new FormControl(128));
+      selectedKeyUsages.push(new FormControl(4));
+      selectedKeyUsages.push(new FormControl(32));
+      selectedKeyUsages.push(new FormControl(2));
+    } else if(certificateType == 'endEntity'){
+      this.issueCertificateForm.get("subjectType")?.setValue("End Entity");
+      this.subjectTypeChanged();
+
+      const selectedKeyUsages = (this.issueCertificateForm.controls.keyUsages as FormArray);
+      selectedKeyUsages.clear();
+      selectedKeyUsages.push(new FormControl(128));
+    }
+  }
+
   subjectTypeChanged(): void {
     let selectedSubjectType = this.issueCertificateForm.get("subjectType")?.value;
     if (selectedSubjectType.includes("Root CA")) {
@@ -124,13 +160,21 @@ export class IssueComponent implements OnInit {
           country: this.issueCertificateForm.get("country")?.value,
           state: this.issueCertificateForm.get("state")?.value,
           local: this.issueCertificateForm.get("local")?.value,
-          validFrom: this.issueCertificateForm.get("validFrom")?.value,
-          validTo: this.issueCertificateForm.get("validTo")?.value,
+          validFrom: this.convertNgbDateToDate(this.issueCertificateForm.get("validFrom")?.value),
+          validTo: this.convertNgbDateToDate(this.issueCertificateForm.get("validTo")?.value),
           ca: this.issueCertificateForm.get("subjectType")?.value == "End Entity" ? false : true,
-          keyUsages: this.issueCertificateForm.get("keyUsages")?.value,
-          extendedKeyUsages: this.issueCertificateForm.get("extendedKeyUsages")?.value,
+          keyUsage: this.issueCertificateForm.get("keyUsages")?.value,
+          extendedKeyUsage: this.issueCertificateForm.get("extendedKeyUsages")?.value,
         };
-        console.log(issueCertificateRequest);
+        console.log(issueCertificateRequest)
+        this.certificateService.postRootCertificate(issueCertificateRequest, this.certificateType).subscribe(
+          data => {
+            this.toastr.success("Successfully generated certificate.", "Success");
+            this.initilizeIssueCertificateForm();
+          }, error => {
+            this.toastr.error("Something went wrong.", "Error");
+          }
+        );
       } else {
         let issueCertificateRequest = {
           email: this.issueCertificateForm.get("email")?.value,
@@ -139,13 +183,20 @@ export class IssueComponent implements OnInit {
           state: this.issueCertificateForm.get("state")?.value,
           local: this.issueCertificateForm.get("local")?.value,
           signWith: this.issueCertificateForm.get("signWith")?.value.serialNumber,
-          validFrom: this.issueCertificateForm.get("validFrom")?.value,
-          validTo: this.issueCertificateForm.get("validTo")?.value,
+          validFrom: this.convertNgbDateToDate(this.issueCertificateForm.get("validFrom")?.value),
+          validTo: this.convertNgbDateToDate(this.issueCertificateForm.get("validTo")?.value),
           ca: this.issueCertificateForm.get("subjectType")?.value == "End Entity" ? false : true,
-          keyUsages: this.issueCertificateForm.get("keyUsages")?.value,
-          extendedKeyUsages: this.issueCertificateForm.get("extendedKeyUsages")?.value,
+          keyUsage: this.issueCertificateForm.get("keyUsages")?.value,
+          extendedKeyUsage: this.issueCertificateForm.get("extendedKeyUsages")?.value,
         };
-        console.log(issueCertificateRequest);
+        this.certificateService.postCertificate(issueCertificateRequest, this.certificateType).subscribe(
+          data => {
+            this.toastr.success("Successfully generated certificate.", "Success");
+            this.initilizeIssueCertificateForm();
+          }, error => {
+            this.toastr.error("Something went wrong.", "Error");
+          }
+        );
       }
     }
   }
@@ -223,6 +274,12 @@ export class IssueComponent implements OnInit {
       this.issueCertificateForm.get("signWith")?.disable();
       this.issueCertificateForm.get("signWith")?.setValue(null);
     }
+  }
+
+  private convertNgbDateToDate(ngbDate: any): Date {
+    let date = new Date(ngbDate.year, ngbDate.month - 1, ngbDate.day);
+
+    return date;
   }
 
 }
