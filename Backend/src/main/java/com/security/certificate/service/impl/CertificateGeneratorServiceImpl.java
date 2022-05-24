@@ -36,7 +36,7 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
     }
 
     @Override
-    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateTemplateType certificateTemplateType) {
+    public X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, String commonName, CertificateTemplateType certificateTemplateType) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
             builder = builder.setProvider("BC");
@@ -51,6 +51,8 @@ public class CertificateGeneratorServiceImpl implements CertificateGeneratorServ
                     subjectData.getPublicKey()
             );
 
+            GeneralNames subjectAltName = new GeneralNames(new GeneralName(GeneralName.dNSName, commonName));
+            certGen.addExtension(Extension.subjectAlternativeName, false, subjectAltName);
             certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(subjectData.getCa()));
             certGen.addExtension(Extension.keyUsage, false,
                     certificateTemplateType == null ? keyUsageFactory.createInstance(keyUsage) : keyUsageFactory.createInstance(certificateTemplateType));

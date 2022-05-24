@@ -120,7 +120,7 @@ public class CertificateController {
         SubjectData subjectData = dataService.generateSubjectData(certificateDto, keyPair.getPublic());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
-                certificateDto.getExtendedKeyUsage(), certificateTemplateType);
+                certificateDto.getExtendedKeyUsage(), certificateDto.getCommonName(), certificateTemplateType);
         certificateService.saveRootCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail());
 
         return new ResponseEntity<>("Root certificate successfully created.", HttpStatus.CREATED);
@@ -154,7 +154,7 @@ public class CertificateController {
         IssuerData issuerData = certificateService.getIssuerDataFromKeyStore(issuerCertificate.getAlias(), issuerCertificate.getCertificateType());
 
         X509Certificate certificate = certificateGeneratorService.generate(subjectData, issuerData, certificateDto.getKeyUsage(),
-                certificateDto.getExtendedKeyUsage(), certificateTemplateType);
+                certificateDto.getExtendedKeyUsage(), certificateDto.getCommonName(), certificateTemplateType);
 
         certificateService.saveCertificate(certificate, keyPair.getPrivate(), certificateDto.getEmail(), certificateDto.getCa() ? "ca" : "ee", issuerCertificate);
 

@@ -40,15 +40,12 @@ public class DataServiceImpl implements DataService {
 
     @Override
     public IssuerData generateIssuerData(CertificateDto certificateDto, PrivateKey privateKey) {
-        //KeyPair k = certificateGeneratorService.generateKeyPair();
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
         builder.addRDN(BCStyle.CN, certificateDto.getCommonName());
         builder.addRDN(BCStyle.O, "AllSafe");
-        builder.addRDN(BCStyle.OU, "Internal AllSafe Unit");
         builder.addRDN(BCStyle.C, certificateDto.getCountry());
         builder.addRDN(BCStyle.ST, certificateDto.getState());
         builder.addRDN(BCStyle.L, certificateDto.getLocal());
-//        builder.addRDN(BCStyle.E, "nikola.luburic@uns.ac.rs");
         return new IssuerData(builder.build(), privateKey);
     }
 

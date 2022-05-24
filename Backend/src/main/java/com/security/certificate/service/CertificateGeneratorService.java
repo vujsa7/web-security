@@ -9,6 +9,6 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
 public interface CertificateGeneratorService {
-    X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, CertificateTemplateType certificateTemplateType);
+    X509Certificate generate(SubjectData subjectData, IssuerData issuerData, int[] keyUsage, KeyPurposeIdType[] extendedKeyUsage, String commonName, CertificateTemplateType certificateTemplateType);
     KeyPair generateKeyPair();
 }
